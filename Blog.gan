@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2024-03-31" view-index="0" gantt-divider-location="549" resource-divider-location="300" version="3.3.3300" locale="zh_CN">
+    <description/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd10" name="序号" width="35" order="0"/>
+        <field id="tpd3" name="名称" width="214" order="1"/>
+        <field id="tpd4" name="开始日期" width="84" order="2"/>
+        <field id="tpd5" name="结束日期" width="85" order="3"/>
+        <field id="tpc0" name="负责成员" width="57" order="4"/>
+        <field id="tpd15" name="备注" width="20" order="5"/>
+        <field id="tpc1" name="任务进度" width="58" order="5"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="名称" width="210" order="0"/>
+        <field id="1" name="默认角色" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+            <taskproperty id="tpc0" name="负责成员" type="custom" valuetype="text" defaultvalue=""/>
+            <taskproperty id="tpc1" name="任务进度" type="custom" valuetype="text" defaultvalue=""/>
+        </taskproperties>
+        <task id="0" uid="6d83583e9bf84918a7653eea054fb522" name="确定功能和需求" meeting="false" start="2024-04-01" duration="4" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true">
+            <depend id="2" type="2" difference="0" hardness="Strong"/>
+            <customproperty taskproperty-id="tpc0" value="ztc jqs dgx"/>
+            <customproperty taskproperty-id="tpc1" value="100%"/>
+        </task>
+        <task id="1" uid="e63c73d4fc6d474780a209d02e9dd280" name="确定技术栈" meeting="false" start="2024-04-01" duration="4" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true">
+            <customproperty taskproperty-id="tpc0" value="hq gpj"/>
+            <customproperty taskproperty-id="tpc1" value="100%"/>
+        </task>
+        <task id="2" uid="9e8be175cc874309a40ae716b0c47109" name="数据库设计" meeting="false" start="2024-04-05" duration="10" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true">
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+            <depend id="4" type="2" difference="0" hardness="Strong"/>
+            <depend id="21" type="2" difference="0" hardness="Strong"/>
+            <depend id="23" type="2" difference="0" hardness="Strong"/>
+            <customproperty taskproperty-id="tpc0" value=""/>
+            <customproperty taskproperty-id="tpc1" value="100%"/>
+            <task id="14" uid="ac47479b07174bdf8c9db855493ab2ee" name="设计MYSQL表结构" meeting="false" start="2024-04-05" duration="10" complete="0" thirdDate="2024-04-05" thirdDate-constraint="0" expand="true">
+                <customproperty taskproperty-id="tpc0" value="ztc jqs dgx"/>
+            </task>
+            <task id="15" uid="a0ab79e288944dd1bcb9b2f9df622246" name="设计MYSQL表之间的关系" meeting="false" start="2024-04-05" duration="10" complete="0" thirdDate="2024-04-05" thirdDate-constraint="0" expand="true">
+                <customproperty taskproperty-id="tpc0" value="ztc jqs dgx"/>
+            </task>
+            <task id="16" uid="0c9815a346184a01a9295fe44fbd5dbf" name="完成环境配置" meeting="false" start="2024-04-05" duration="10" complete="0" thirdDate="2024-04-05" thirdDate-constraint="0" expand="true">
+                <customproperty taskproperty-id="tpc0" value="hq gpj"/>
+            </task>
+        </task>
+        <task id="3" uid="1d930a0e3c4348629604a7eb7e92b61b" name="管理员后端开发" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+            <task id="8" uid="fa3769ae5a1b49d6914359c15dabfcb9" name="登录注册功能" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-17" thirdDate-constraint="0" expand="true"/>
+            <task id="9" uid="7be03b33504f47c4bd9accc78ad549ad" name="文章管理" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true"/>
+            <task id="10" uid="106d048f5bf44824b28ebbe1bfa719f0" name="用户管理" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-17" thirdDate-constraint="0" expand="true"/>
+            <task id="11" uid="9b7260b39f62443387abe7a8baab5786" name="样式与页面管理" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-17" thirdDate-constraint="0" expand="true"/>
+            <task id="12" uid="9c98ea1b2d744fe583d73252e7ffc467" name="统计分析" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-17" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="21" uid="e9e82323c5a545c9ba4cf7f6c26b5267" name="管理员前端设计" meeting="false" start="2024-04-19" duration="14" complete="0" thirdDate="2024-04-01" thirdDate-constraint="0" expand="true">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="4" uid="78548a8d231540428bdc791fc64cb337" name="用户后端开发" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+            <task id="17" uid="6f664329c67147bdb1796dd496efe1a5" name="用户登录功能" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-01" thirdDate-constraint="0" expand="true"/>
+            <task id="19" uid="2b4da758e1d44c58a4d8bc9e864f75e4" name="发表博客功能" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-19" thirdDate-constraint="0" expand="true"/>
+            <task id="20" uid="c5a713185b674d82a301e8aa884db872" name="博客互动功能" meeting="false" start="2024-04-19" duration="21" complete="0" thirdDate="2024-04-19" thirdDate-constraint="0" expand="true"/>
+        </task>
+        <task id="23" uid="50c79fb7d76e456885f2729211887fc8" name="用户前端页面设计" meeting="false" start="2024-04-19" duration="14" complete="0" thirdDate="2024-04-01" thirdDate-constraint="0" expand="true">
+            <depend id="6" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="6" uid="9b49520f8a2741ab83324b015679ed8c" name="测试功能" meeting="false" start="2024-05-20" duration="7" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true">
+            <depend id="7" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="7" uid="fe96dea6f61b4e4ca2a3a4023cdabc0b" name="维护和更新" meeting="false" start="2024-05-29" duration="7" complete="0" thirdDate="2024-04-16" thirdDate-constraint="0" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
