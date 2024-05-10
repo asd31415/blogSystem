@@ -7,4 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public interface UserService {
     User getUserByUsername(String username);
+
+    void registerUser(User newUser);
+
+    void loginIn(User user);
 }

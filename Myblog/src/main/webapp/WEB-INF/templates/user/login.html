@@ -19,7 +19,7 @@
                 </h2>
                 <div class="content">
 
-                    <form class="ui fluid form" id="loginform">
+                    <form class="ui fluid form" id="loginForm">
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="user icon"></i>
@@ -41,11 +41,11 @@
                                      onclick="this.src='verifyCode?code='+Date.parse(new Date())"/>
                             </div>
                         </div>
-                        <button class="ui primary labeled icon button" id="register-btn" type="button">
+                        <button class="ui primary labeled icon button" id="login-btn" type="button">
                             <i class="unlock alternate icon"></i>
                             Login
                         </button>
-                        <button class="ui primary labeled icon button" id="login-btn" type="button">
+                        <button class="ui primary labeled icon button" id="register-btn" type="button">
                             <i class="unlock alternate icon"></i>
                             Register
                         </button>
@@ -55,6 +55,13 @@
         </div>
     </div>
 </div>
+
+<script th:inline="javascript">
+    // 获取图片验证码路径
+    var verifyCodeUrl =  [[@{/loginVerify}]];
+    // 获取后台首页路径
+    var userUrl = [[@{/user/index}]];
+</script>
 
 <script>
     //为登录,注册按钮添加触发函数
@@ -70,17 +77,18 @@
             return false;
         }
 
-        var formData = new formData(document.getElementById("loginform"));
+        var formData = new formData(document.getElementById("loginForm"));
 
-        fetch("/login",{
+        fetch("/loginVerify",{
             method:"POST",
             body:formData
         })
             .then(function (response){
                 if(response.ok){
+                    window.location.href = "user/index";
                     return response.text();
                 }else{
-                    throw new Error("请求失败");
+
                 }
             })
             .then(function (data){
@@ -92,7 +100,7 @@
 
     });
 
-    $("#login-btn").on('click', function (){
+    $("#register-btn").on('click', function (){
 
     });
 </script>
@@ -100,29 +108,3 @@
 </body>
 </html>
 
-<!--var url = "your_backend_url";-->
-<!--var formData = new FormData();-->
-<!--formData.append('key1', 'value1');-->
-<!--formData.append('key2', 'value2');-->
-
-<!--fetch(url, {-->
-<!--method: 'POST',-->
-<!--body: formData,-->
-<!--headers: {-->
-<!--'Content-Type': 'application/x-www-form-urlencoded'-->
-<!--}-->
-<!--})-->
-<!--.then(response => {-->
-<!--if (response.ok) {-->
-<!--return response.text();-->
-<!--}-->
-<!--throw new Error('Network response was not ok.');-->
-<!--})-->
-<!--.then(data => {-->
-<!--// 请求成功后的处理逻辑-->
-<!--console.log(data);-->
-<!--})-->
-<!--.catch(error => {-->
-<!--// 请求失败后的处理逻辑-->
-<!--console.error('There has been a problem with your fetch operation:', error);-->
-<!--});-->

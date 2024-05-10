@@ -41,11 +41,11 @@
     <insert id="insert" parameterType="com.myblog.entity.User" useGeneratedKeys="true" keyProperty="id">
         insert into
         <include refid="tb"/>
-        (id, username, password,
+        (username, password,
         nickname, email, url,
         avatar, last_login_ip, register_time, update_time,
         last_login_time, status, type, description)
-        values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+        values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
         #{nickname,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
         #{avatar,jdbcType=VARCHAR}, #{lastLoginIp,jdbcType=VARCHAR}, #{registerTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
         #{lastLoginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR})
