@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/static/css/semantic.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/login.css}"/>
+</head>
+<body>
+
+<div class="centered">
+    <div class="ui centered grid container">
+        <div class="nine wide column">
+            <div class="ui fluid card">
+                <h2 class="ui teal image header">
+                    <div class="content">
+                        博客系统登录
+                    </div>
+                </h2>
+                <div class="content">
+
+                    <form class="ui fluid form" id="loginform">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="username" placeholder="用户名" th:value="${username}" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="密码" th:value="${password}" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="write icon"></i>
+                                <input type="number" name="verifyCode" placeholder="验证码" required>
+                                &nbsp;
+                                <img id="verifyCodeImg" src="verifyCode" class="img-rounded" alt="点击获取验证码" title="点击刷新"
+                                     onclick="this.src='verifyCode?code='+Date.parse(new Date())"/>
+                            </div>
+                        </div>
+                        <button class="ui primary labeled icon button" id="register-btn" type="button">
+                            <i class="unlock alternate icon"></i>
+                            Login
+                        </button>
+                        <button class="ui primary labeled icon button" id="login-btn" type="button">
+                            <i class="unlock alternate icon"></i>
+                            Register
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //为登录,注册按钮添加触发函数
+    $("#login-btn").on('click', function (){
+        var username = document.getElementsByName("username");
+        var password = document.getElementsByName("password");
+
+        //在前后端双重判断
+        if(username == ""){
+            return false;
+        }
+        if(password == ""){
+            return false;
+        }
+
+        var formData = new formData(document.getElementById("loginform"));
+
+        fetch("/login",{
+            method:"POST",
+            body:formData
+        })
+            .then(function (response){
+                if(response.ok){
+                    return response.text();
+                }else{
+                    throw new Error("请求失败");
+                }
+            })
+            .then(function (data){
+                //处理响应数据
+            })
+            .catch(function (error){
+                console.error(error);
+            })
+
+    });
+
+    $("#login-btn").on('click', function (){
+
+    });
+</script>
+
+</body>
+</html>
+
+<!--var url = "your_backend_url";-->
+<!--var formData = new FormData();-->
+<!--formData.append('key1', 'value1');-->
+<!--formData.append('key2', 'value2');-->
+
+<!--fetch(url, {-->
+<!--method: 'POST',-->
+<!--body: formData,-->
+<!--headers: {-->
+<!--'Content-Type': 'application/x-www-form-urlencoded'-->
+<!--}-->
+<!--})-->
+<!--.then(response => {-->
+<!--if (response.ok) {-->
+<!--return response.text();-->
+<!--}-->
+<!--throw new Error('Network response was not ok.');-->
+<!--})-->
+<!--.then(data => {-->
+<!--// 请求成功后的处理逻辑-->
+<!--console.log(data);-->
+<!--})-->
+<!--.catch(error => {-->
+<!--// 请求失败后的处理逻辑-->
+<!--console.error('There has been a problem with your fetch operation:', error);-->
+<!--});-->
