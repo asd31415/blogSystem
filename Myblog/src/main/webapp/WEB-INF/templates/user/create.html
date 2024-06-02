@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="user/fragment :: head">
+    <meta charset="UTF-8">
+    <title>你好</title>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(5)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+<div class="ui container" style="width: 80%;">
+    <div class="ui segment">
+        <div class="ui header" style="border-bottom: 1px solid #000; padding-bottom: 10px;">
+            <input type="text" id="title" class="ui action input" placeholder="请输入标题" style="border: none; outline: none;">
+        </div>
+        <div id="editor">
+            <textarea style="display:none;"></textarea>
+        </div>
+    </div>
+
+    <div class="ui segment">
+        <h4 class="ui dividing header">文章标签:</h4>
+        <div class="ui form">
+            <div class="ui horizontal stackable grid">
+                <div th:each="tag : ${tags}" class="one wide column">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="tags" th:id="'tag_' + ${tag.id}" th:value="${tag.id}">
+                        <label th:for="'tag_' + ${tag.id}" th:text="${tag.name}"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4 class="ui dividing header">文章属性:</h4>
+        <div class="ui form">
+            <div class="ui horizontal stackable grid">
+                <div class="ten wide column">
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="likeOption" id="likeOption">
+                        <label for="likeOption">允许点赞</label>
+                    </div>
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="commentOption" id="commentOption">
+                        <label for="commentOption">允许评论</label>
+                    </div>
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="publishOption" id="publishOption">
+                        <label for="publishOption">是否公开</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui segment">
+        <button class="ui primary button" onclick="sendMarkdownContent()">保存文章</button>
+    </div>
+</div>
+</div>
+
+<!-- 引入 Editor.md 的 JavaScript 文件 -->
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/editor.md/editormd.min.js"></script>
+<script type="text/javascript">
+    var editor;
+
+    $(function() {
+        editor = editormd("editor", {
+            path : "https://cdn.jsdelivr.net/npm/editor.md/lib/", // Editor.md 的路径
+            height: 640,
+            syncScrolling: "single",
+            toolbarAutoFixed: false,
+            saveHTMLToTextarea: true,
+        });
+    });
+
+    function sendMarkdownContent() {
+        var title = $('title').val();
+        // 获取 Markdown 内容
+        var markdownContent = $('#editor textarea').val();
+
+        // 获取复选框的选择信息
+        var likeOption = $('#likeOption').prop('checked');
+        var commentOption = $('#commentOption').prop('checked');
+        var publishOption = $('#publishOption').prop('checked');
+
+        // 获取标签选择信息
+        var selectedTags = [];
+        $('input[name="tags"]:checked').each(function() {
+            selectedTags.push($(this).attr('id')); // 获取ID属性值
+        });
+
+        // 检查标题、内容和标签是否为空
+        if (title.trim() === '') {
+            alert('标题不能为空');
+            return;
+        }
+
+        if (markdownContent.trim() === '') {
+            alert('内容不能为空');
+            return;
+        }
+
+        if (selectedTags.length === 0) {
+            alert('标签不能为空');
+            return;
+        }
+
+        // 构造要发送的数据
+        var postData = {
+            title: title,
+            markdownContent: markdownContent,
+            likeOption: likeOption,
+            commentOption: commentOption,
+            publishOption: publishOption,
+            selectedTags: selectedTags
+        };
+
+        // 发送 POST 请求
+        $.ajax({
+            url: '/submitMarkdown', // 替换为你的后端接收路径
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(postData),
+            success: function(response) {
+                // 请求成功后的处理逻辑
+                console.log('Response:', response);
+            },
+            error: function(xhr, status, error) {
+                // 请求失败后的处理逻辑
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+

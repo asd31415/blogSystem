@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="user/fragment :: head">
+    <style>
+        .ui.checkbox.active {
+            background-color: #2185d0; /* 你可以根据需要调整颜色 */
+            color: white; /* 改变文字颜色 */
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(3)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+    <div class="ui container">
+        <div class="ui segment" style="display: flex; flex-direction: column; width: 100%">
+            <div class="ui horizontal stackable grid" id="tags">
+                <div th:each="tag : ${tags}" class="three wide column" th:classappend="${tag.id == tag_select} ? 'selected'">
+                    <!-- 使用 Semantic UI 的卡片组件 -->
+                    <div class="ui card" style="display: flex; justify-content: center; align-items: center;"
+                         onmouseover="highlightCard(this)" onmouseout="resetCardColor(this)" onclick="redirectLink(this)">
+                        <a href="#" class="m-item item" th:href="@{'/user/category/' + ${tag.id}}" th:text="${tag.name}">
+                            <i class="mini home icon"></i>&nbsp;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment">
+            <h3 class="ui teal header">文章列表</h3>
+            <div>
+
+            </div>
+            <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${blogList}">
+                <div class="ui middle aligned mobile reversed stackable grid">
+                    <div class="fourteen wide column">
+                        <h3 class="ui header"><a href="#" th:href="@{/article/}+${blog.id} + '.html'" target="_blank"
+                                                 class="m-black" th:text="${blog.title}">你真的理解什么是财富自由吗?</a></h3>
+                        <p class="m-text" th:text="|${blog.description}......|">
+                            正确做好任何一件事情的前提是清晰、正确的理解目标。而事实是，我们很多人很多时候根本没有对目标正确的定义，甚至根本从来就没有想过，只是大家都那么做而已…...</p>
+
+                        <div class="ui grid">
+                            <div class="eleven wide column">
+                                <div class="ui mini horizontal link list">
+                                    <div class="item" th:if="${blog.user != null}">
+                                        <img src="https://unsplash.it/100/100?image=1005"
+                                             th:src="@{${blog.user.avatar}}" alt="" class="ui avatar image">
+                                        <div class="content"><a href="#" th:href="@{/about}" class="header"
+                                                                th:text="${blog.user.nickname}"></a></div>
+                                    </div>
+                                    <div class="item">
+                                        <i class="calendar icon"></i><span
+                                            th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">2017-10-01</span>
+                                    </div>
+                                    <div class="item">
+                                        <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right aligned five wide column">
+                                <a href="#" th:if="${blog.type != null}" th:href="@{'/category/' + ${blog.type.id} + '/page/1'}" target="_blank"
+                                   class="ui teal basic label m-padded-tiny m-text-thin"
+                                   th:text="${blog.type.name}">认知升级</a>
+                                <a href="#" th:if="${blog.type == null}" target="_blank"
+                                   class="ui teal basic label m-padded-tiny m-text-thin" >未分类</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<script>
+    function redirectLink(card) {
+        var link = card.querySelector('a'); // 获取卡片内的链接元素
+        link.click(); // 触发链接的点击事件
+    }
+
+    function highlightCard(card) {
+        card.style.backgroundColor = 'lightgray'; // 设置卡片背景颜色
+    }
+
+    function resetCardColor(card) {
+        card.style.backgroundColor = ''; // 取消卡片背景颜色
+    }
+</script>
+
+<style>
+    .selected {
+        background-color: #f0f0f0; /* 高亮颜色 */
+    }
+</style>
+
+</body>
+</html>

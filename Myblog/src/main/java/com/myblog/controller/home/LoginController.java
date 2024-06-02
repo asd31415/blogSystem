@@ -2,6 +2,7 @@ package com.myblog.controller.home;
 
 import com.myblog.entity.User;
 import com.myblog.service.UserService;
+import lombok.Value;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -13,15 +14,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sun.security.util.Password;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 public class LoginController {
 
+    @Autowired
     UserService userService;
 
     @RequestMapping(value={"/","/login"})
     public String login(){
         return "user/login";
     }
+
 
     @RequestMapping(value={"/register"})
     public String register(){
@@ -31,11 +36,9 @@ public class LoginController {
 
     @RequestMapping("/loginVerify")
     public ResponseEntity<?> loginVerify(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        @RequestParam("verifyCode") String verifyCode){
-        System.out.println(username);
-        System.out.println(password);
-        System.out.println(verifyCode);
+                                         @RequestParam("password") String password,
+                                         @RequestParam("verifyCode") String verifyCode,
+                                         HttpSession session){
 
         if(username==null||username.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户名不能为空！");
@@ -53,12 +56,14 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户不存在！");
         }
 
-        if(password != user.getPassword()){
+        if(!password.equals(user.getPassword())){
+            System.out.println("输入:"+password);
+            System.out.println("正确:"+user.getPassword());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密码错误！");
         }
 
         //更新登录状态
-        userService.loginIn(user);
+        session.setAttribute("user",user);
 
         return ResponseEntity.ok().body("登录成功！");
     }
@@ -68,18 +73,27 @@ public class LoginController {
     public ResponseEntity<?> registerVerify(@RequestParam("email") String email,
                                       @RequestParam("username") String username,
                                       @RequestParam("password") String password,
-                                      @RequestParam("nickname") String nickname){
+                                      @RequestParam("nickname") String nickname,
+                                      @RequestParam("description") String description){
         System.out.println("正在注册帐号！");
+        System.out.println(email);
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println(nickname);
+
 
         User newUser = new User();
+
         if(email == null || email.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("电子邮箱不能为空！");
         }else{newUser.setEmail(email);}
+
         if(username == null || username.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户名不能为空！");
         }else{
             User existUser = userService.getUserByUsername(username);
             if(existUser != null){
+                System.out.println("用户已存在");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户已存在！");
             }
             newUser.setUsername(username);
@@ -87,19 +101,15 @@ public class LoginController {
         if(password == null || password.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密码不能为空！");
         }else newUser.setPassword(password);
+
         if(nickname == null || nickname.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("昵称不能为空！");
         }else newUser.setNickname(nickname);
 
+        newUser.setDescription(description);
+
         userService.registerUser(newUser);
-
-        return ResponseEntity.ok().body("登录成功!");
-    }
-
-    @RequestMapping("/user/index")
-    public String index(){
-        //进入到首页
-        return "user/index";
+        return ResponseEntity.ok().body("注册成功!");
     }
 
 }

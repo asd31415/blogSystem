@@ -11,7 +11,8 @@ import java.util.Date;
  */
 @Data
 public class Notice implements Serializable {
-    private static final long serialVersionUID = -6721825786484798754L;
+    private static final long serialVersionUID = 1234567890L;
+
     private Integer id;
 
     private String title;

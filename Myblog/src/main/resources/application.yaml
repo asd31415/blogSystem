@@ -1,6 +1,6 @@
 server:
   #默认8080
-  port: 8081
+  port: 8082
 
 spring:
   application:
@@ -60,6 +60,10 @@ spring:
         min-idle: 0
     timeout: 1000
 
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 #mybatis
 mybatis:

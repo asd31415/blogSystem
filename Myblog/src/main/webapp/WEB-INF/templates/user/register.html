@@ -2,9 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>注册帐号</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- 引入 Semantic UI CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" rel="stylesheet">
+    <!-- 引入 jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+<div class="ui container">
+    <h2 class="ui header">Register</h2>
+    <form id="registerForm" class="ui form">
+        <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Email">
+        </div>
+        <div class="field">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Username">
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Password">
+        </div>
+        <div class="field">
+            <label>Nickname</label>
+            <input type="text" name="nickname" placeholder="Nickname">
+        </div>
+        <div class="field">
+            <label>Description</label>
+            <input type="text" name="description" placeholder="Description">
+        </div>
+        <button class="ui button primary" id="register-btn" type="button">Register</button>
+    </form>
+</div>
 
+<script>
+    $("#register-btn").on('click', function () {
+            // 获取表单数据
+            var username = $("input[name='username']").val();
+            var password = $("input[name='password']").val();
+
+            // 在前后端双重判断
+            if (username === "") {
+                alert("Username cannot be empty");
+                return false;  // 阻止默认行为和事件传播
+            }
+            if (password === "") {
+                alert("Password cannot be empty");
+                return false;  // 阻止默认行为和事件传播
+            }
+
+            var formData = new FormData(document.getElementById("registerForm"));
+
+            fetch("/registerVerify", {
+                method: "POST",
+                body: formData
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.text().then(function (data) {
+                            window.location.href = "user/index";
+                        });
+                    } else {
+                        // 处理非 2xx 响应
+                        return response.text().then(function (error) {
+                            alert("注册失败: " + error);
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                    alert("An error occurred: " + error.message);
+                });
+
+            return false;  // 阻止默认行为和事件传播
+    });
+</script>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.myblog.mapper;
 
 import com.myblog.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface UserMapper {
      * @param userId 用户ID
      * @return 用户
      */
-    User getUserById(Integer userId);
+    User getUserById(@Param("userId") Integer userId);
 
     /**
      * 更新

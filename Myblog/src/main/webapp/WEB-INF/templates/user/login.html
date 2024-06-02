@@ -2,9 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title</title>
-    <link rel="stylesheet" th:href="@{/static/css/semantic.min.css}"/>
+<!--    <link rel="stylesheet" th:href="@{/static/css/semantic.min.css}"/>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
     <link rel="stylesheet" th:href="@{/static/css/login.css}"/>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
@@ -56,52 +60,51 @@
     </div>
 </div>
 
-<script th:inline="javascript">
-    // 获取图片验证码路径
-    var verifyCodeUrl =  [[@{/loginVerify}]];
-    // 获取后台首页路径
-    var userUrl = [[@{/user/index}]];
-</script>
-
 <script>
     //为登录,注册按钮添加触发函数
-    $("#login-btn").on('click', function (){
-        var username = document.getElementsByName("username");
-        var password = document.getElementsByName("password");
+    $("#login-btn").on('click', function () {
+        var username = document.querySelector("[name='username']").value;
+        var password = document.querySelector("[name='password']").value;
 
-        //在前后端双重判断
-        if(username == ""){
-            return false;
+        // 在前后端双重判断
+        if (username === "") {
+            alert("用户名不能为空");
+            return false;  // 阻止默认行为和事件传播
         }
-        if(password == ""){
-            return false;
+        if (password === "") {
+            alert("密码不能为空");
+            return false;  // 阻止默认行为和事件传播
         }
 
-        var formData = new formData(document.getElementById("loginForm"));
+        var formData = new FormData(document.getElementById("loginForm"));
 
-        fetch("/loginVerify",{
-            method:"POST",
-            body:formData
+        fetch("/loginVerify", {
+            method: "POST",
+            body: formData
         })
-            .then(function (response){
-                if(response.ok){
-                    window.location.href = "user/index";
-                    return response.text();
-                }else{
-
+            .then(function (response) {
+                if (response.ok) {
+                    return response.text().then(function (data) {
+                        window.location.href = "/user/index";
+                    });
+                } else {
+                    // 处理非 2xx 响应
+                    return response.text().then(function (error) {
+                        alert("登录失败: " + error);
+                    });
                 }
             })
-            .then(function (data){
-                //处理响应数据
-            })
-            .catch(function (error){
-                console.error(error);
-            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                alert("An error occurred: " + error.message);
+            });
 
+        return false;  // 阻止默认行为和事件传播
     });
 
-    $("#register-btn").on('click', function (){
-
+    // 为注册按钮添加触发函数
+    $("#register-btn").on('click', function () {
+        window.location.href = "/register";
     });
 </script>
 

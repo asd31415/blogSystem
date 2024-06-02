@@ -24,6 +24,12 @@
         <result column="url" property="url" jdbcType="VARCHAR" />
     </resultMap>
 
+    <resultMap id="tagResultMap" type="com.myblog.entity.Tag" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+    </resultMap>
+
     <sql id="tb">t_blog</sql>
 
     <sql id="Base_Column_List">
@@ -196,6 +202,17 @@
         ORDER BY createTime DESC, id DESC
     </select>
 
+<!--    获取最新文章-->
+    <select id="getNewestBlogs" resultType="com.myblog.entity.Blog">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        <include refid="tb"/>
+        ORDER BY #{key} DESC
+        LIMIT 10
+    </select>
+
+
     <select id="getBlogByPublishedAndId" resultType="com.myblog.entity.Blog">
         SELECT
         <include refid="Base_Column_List"/>
@@ -210,6 +227,14 @@
             </if>
             id = #{id}
         </where>
+    </select>
+
+    <select id="getBlogByUserId" resultType="com.myblog.entity.Blog">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        <include refid="tb"/>
+        where user_id = #{userId}
     </select>
 
     <!--通过分页查询文章-->
@@ -442,6 +467,12 @@
         id = #{id}
     </update>
 
+    <select id="getLikeCount" resultType="Integer">
+        select like_count
+        from t_blog
+        where id = #{blogId}
+    </select>
+
 
     <select id="findGroupYear" resultType="String">
         select DATE_FORMAT(b.updateTime,'%Y') as year from t_blog b where posttype = 0 and published = 0 group by DATE_FORMAT(b.updateTime,'%Y') order by year desc
@@ -450,4 +481,33 @@
     <select id="findByYear" parameterType="String" resultType="com.myblog.entity.Blog">
         select b.id, b.title, b.createTime, b.updateTime, b.published, b.flag, b.type_id, b.posttype, b.url from t_blog b where DATE_FORMAT(b.updateTime,'%Y') = #{year} and posttype = 0 and published = 0
     </select>
+
+    <select id="getBlogById" parameterType="Integer"
+            resultType="com.myblog.entity.Blog">
+        SELECT t_blog.*
+        FROM t_blog
+        where id = #{id}
+        limit 1
+    </select>
+
+    <select id="getBlogByTag" resultType="com.myblog.entity.Blog">
+        SELECT tb.*
+        FROM t_blog tb
+                 JOIN t_blog_t_tag tbt ON tb.id = tbt.blogs_id
+        WHERE tbt.tags_id = #{tagId}
+    </select>
+
+    <select id="findUserIdByBlogId" parameterType="Integer" resultType="Integer">
+        select user_id
+        from t_blog
+        where id = #{id}
+    </select>
+
+    <select id="getBlogTags" parameterType="Integer" resultType="com.myblog.entity.Tag">
+        select b.*
+        from t_blog_t_tag a left outer join t_tag b
+        on a.tags_id = b.id
+        where a.blogs_id = #{blogId}
+    </select>
+
 </mapper>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="cn" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/editor.md/css/editormd.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        .nav-container {
+            display: flex;
+            justify-content: center;
+        }
+        .ui.menu {
+            text-align: center;
+            width: 100%;
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+        }
+        .ui.menu .item {
+            flex: 1;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .ui.menu .create-item {
+            margin-left: auto; /* 将其推到最右边 */
+        }
+        .full-width {
+            display: flex;
+            width: 100%;
+        }
+        #editor {
+            width: 50%;
+            height: 400px;
+        }
+        #preview {
+            width: 50%;
+            height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?4f5553d30f9b70ee15bdcbc4353dd549";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+<body>
+
+
+<!--导航-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <div class="ui container nav-container">
+        <div th:fragment="header" id="header-container">
+            <div class="ui inverted secondary stackable menu">
+                <a href="#" th:href="@{/user/index}" class="m-item item m-mobile-hide " th:classappend="${n==1} ? 'active'"><i
+                        class="mini home icon"></i>&nbsp;首页</a>
+                <a href="#" th:href="@{/user/search}" class="m-item item m-mobile-hide" th:classappend="${n==2} ? 'active'"><i
+                        class="mini tags icon"></i>&nbsp;搜索</a>
+                <a href="#" th:href="@{/user/category}" class="m-item item m-mobile-hide" th:classappend="${n==3} ? 'active'"><i
+                        class="mini idea icon"></i>&nbsp;分类</a>
+                <a href="#" th:href="@{/user/userhome}" class="m-item item m-mobile-hide" th:classappend="${n==4} ? 'active'"><i
+                        class="mini info icon"></i>&nbsp;个人中心</a>
+                <a href="#" th:href="@{/user/create}" class="m-item item m-mobile-hide create-item" th:classappend="${n==5} ? 'active'"><i
+                        class="mini clone icon"></i>&nbsp;创作</a>
+                <a href="#" th:href="@{/user/logout}" class="m-item item m-mobile-hide create-item"><i
+                        class="mini clone icon"></i>&nbsp;退出登录</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive">
+    <div class="ui center aligned container">
+        <div th:fragment="widgetList" id="footer-container">
+            <div class="ui inverted divided stackable grid">
+                <div class="four wide column" th:each="widget : ${footerWidgets}"
+                     th:utext="${widget.widgetContent}"></div>
+            </div>
+        </div>
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-thin m-text-spaced m-opacity-tiny" style="color: #ffffff">Copyright © 2020 - <span th:text="${#dates.year(#dates.createNow())}">2019</span>
+            isLizx -Blog Designed by Lizhixiang<br><br>
+            <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">浙ICP备20005114号</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a rel="nofollow" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33011802001928" target="_blank"><img style="margin-bottom: -4px;" src="/images/ghs.png">&nbsp;&nbsp;浙公网安备33011802001928</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a rel="nofollow" href="https://tongji.baidu.com/web/welcome/ico?s=4f5553d30f9b70ee15bdcbc4353dd549" target="_blank"> 网站统计</a>
+        </p>
+    </div>
+
+</footer>
+</body>
+</html>

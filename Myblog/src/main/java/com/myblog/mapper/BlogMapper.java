@@ -1,6 +1,7 @@
 package com.myblog.mapper;
 
 import com.myblog.entity.Blog;
+import com.myblog.entity.Tag;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,6 +11,10 @@ import java.util.List;
 
 @Mapper
 public interface BlogMapper {
+    Integer findUserIdByBlogId(@Param("id")Integer id);
+
+    Blog getBlogById(@Param(value = "id")Integer id);
+
     /**
      * 根据ID删除
      *
@@ -234,9 +239,19 @@ public interface BlogMapper {
      * 修改点赞数
      * @param id
      */
-    void incrBlogLikes(Integer id);
+    void incrBlogLikes(@Param("id")Integer id);
+
+    Integer getLikeCount(@Param("blogId")Integer blogId);
 
     List<String> findGroupYear();
 
     List<Blog> findByYear(String year);
+
+    List<Blog> getNewestBlogs(@Param("key")String key);
+
+    List<Blog> getBlogByUserId(@Param("userId")Integer userId);
+
+    List<Blog> getBlogByTag(@Param("tagId")Integer tagId);
+
+    List<Tag> getBlogTags(@Param("blogId")Integer blogId);
 }

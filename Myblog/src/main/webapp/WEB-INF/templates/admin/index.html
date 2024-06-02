@@ -1,10 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.0.1/css/bootstrap.min.css">
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.css" rel="stylesheet">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        function login() {
+            var username = $('#nameInput').val();
+            var password = $('#passwordInput').val();
+            console.log('login name is ' + username)
+            console.log('login password is ' + password)
+
+            $.ajax({
+                type:"POST",    //访问类型
+                url:"/login",   //注意此处的路由和LoginController中的PostMapping中的路由 保持一致
+                dataType:"json",
+                data:{
+                    username:username,
+                    password:password,
+                },
+                success:function(data){ //接收到后端返回的数据，并做处理
+                    if(data.status=="ok"){
+                        alert('ok');
+                    }else{
+                        alert('fail');
+                    }
+                },
+                error: function(jqXHR){
+                    alert("发生错误："+jqXHR.status);
+                }
+            });
+        }
+    </script>
 </head>
 <body>
-welcome
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+
+username:<input id="nameInput">
+password:<input id="passwordInput">
+<button onclick="login()">登录</button>  //点击登录按钮触发的函数
 </body>
 </html>

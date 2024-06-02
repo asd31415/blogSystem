@@ -29,7 +29,7 @@
         select
         <include refid="Base_Column_List"/>
         from <include refid="tb"/>
-        where id = #{id,jdbcType=INTEGER}
+        where id = #{userId}
     </select>
 
     <delete id="deleteById" parameterType="java.lang.Integer">

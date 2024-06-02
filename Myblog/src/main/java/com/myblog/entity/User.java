@@ -2,6 +2,7 @@ package com.myblog.entity;
 
 import lombok.Data;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,8 +11,12 @@ import java.util.Date;
  * @date 2020-01-30 - 11:49
  */
 @Data
+@Entity
+@Table(name = "t_user")
 public class User implements Serializable {
     private static final long serialVersionUID = -7813104768329168886L;
+
+    @Id
     private Integer id;
 
     private String avatar;
@@ -28,12 +33,16 @@ public class User implements Serializable {
 
     private String url;
 
+    @Column(name = "last_login_ip")
     private String lastLoginIp;
 
+    @Column(name = "register_time")
     private Date registerTime;
 
+    @Column(name = "update_time")
     private Date updateTime;
 
+    @Column(name = "last_login_time")
     private Date lastLoginTime;
 
     private Boolean status;
@@ -43,6 +52,7 @@ public class User implements Serializable {
     /**
      * 文章数量(不是数据库字段)
      */
+    @Transient
     private Integer blogCount;
 
 

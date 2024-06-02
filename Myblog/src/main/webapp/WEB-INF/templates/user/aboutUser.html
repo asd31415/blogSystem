@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="user/fragment :: head">
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(4)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+  <div class="ui container">
+    <div class="ui segment">
+      <h3 class="ui header">用户信息</h3>
+      <div class="ui grid">
+        <div class="four wide column">
+          <div class="ui fluid image">
+            <th:block th:with="staticPath='/static'">
+              <img class="ui medium circular image" th:src="${staticPath + user.avatar}" th:alt="${user.username}" id="avatarPreview" alt="Avatar">
+            </th:block>
+          </div>
+        </div>
+        <div class="twelve wide column">
+          <div class="ui grid">
+            <div class="two wide column">
+            </div>
+            <div class="eight wide column">
+              <div class="ui form">
+                <div class="field">
+                  <label>昵称</label>
+                  <span th:text="${user.nickname}"></span>
+                </div>
+                <div class="field">
+                  <label>邮箱</label>
+                  <span th:text="${user.email}"></span>
+                </div>
+                <div class="field">
+                  <label>个人描述</label>
+                  <span th:text="${user.description}"></span>
+                </div>
+                <div class="field">
+                  <label>注册时间</label>
+                  <span th:text="${#dates.format(user.registerTime,'yyyy-MM-dd')}"></span>
+                </div>
+                <div class="field">
+                  <label>最后登录时间</label>
+                  <span th:text="${#dates.format(user.lastLoginTime,'yyyy-MM-dd')}"></span>
+                </div>
+              </div>
+            </div>
+            <div class="eight wide column">
+              <!-- Right empty column for spacing -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="ui segment">
+      <h3 class="ui header">个人博客</h3>
+      <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${blogs}">
+        <div class="ui middle aligned mobile reversed stackable grid">
+          <div class="eleven wide column">
+            <h3 class="ui header"><a href="#" th:href="@{/article/}+${blog.id} + '.html'" target="_blank"
+                                     class="m-black" th:text="${blog.title}">你真的理解什么是财富自由吗?</a></h3>
+            <p class="m-text" th:text="|${blog.description}......|">
+              正确做好任何一件事情的前提是清晰、正确的理解目标。而事实是，我们很多人很多时候根本没有对目标正确的定义，甚至根本从来就没有想过，只是大家都那么做而已…...</p>
+
+            <div class="ui grid">
+              <div class="eleven wide column">
+                <div class="ui mini horizontal link list">
+                  <div class="item" th:if="${blog.user != null}">
+                    <img src="https://unsplash.it/100/100?image=1005"
+                         th:src="@{${blog.user.avatar}}" alt="" class="ui avatar image">
+                    <div class="content"><a href="#" th:href="@{/about}" class="header"
+                                            th:text="${blog.user.nickname}"></a></div>
+                  </div>
+                  <div class="item">
+                    <i class="calendar icon"></i><span
+                          th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">2017-10-01</span>
+                  </div>
+                  <div class="item">
+                    <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                  </div>
+                </div>
+              </div>
+              <div class="right aligned five wide column">
+                <a href="#" th:if="${blog.type != null}" th:href="@{'/category/' + ${blog.type.id} + '/page/1'}" target="_blank"
+                   class="ui teal basic label m-padded-tiny m-text-thin"
+                   th:text="${blog.type.name}">认知升级</a>
+                <a href="#" th:if="${blog.type == null}" target="_blank"
+                   class="ui teal basic label m-padded-tiny m-text-thin" >未分类</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
