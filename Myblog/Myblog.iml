@@ -22,7 +22,9 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping />
+        <datasource-mapping>
+          <factory-entry name="entityManagerFactory" />
+        </datasource-mapping>
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -146,5 +148,7 @@
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:2.1.8.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-orm:5.1.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:5.1.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.8.10" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.9" level="project" />
   </component>
 </module>

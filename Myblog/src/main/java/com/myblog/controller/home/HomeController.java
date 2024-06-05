@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +52,7 @@ public class HomeController {
 
         //中间栏目：推荐文章列表,包括最新，最热门（阅读量/发布时间+评论最多），点赞最多
         List<Blog>  newBlogList = blogService.getNewestBlogs("createTime");
-        model.addAttribute("latestBlogs",newBlogList);
+        model.addAttribute("blogList",newBlogList);
 
         //右侧栏目：公告，网站信息
         List<Notice> noticeList = noticeService.listNoticesByCreateTime();
@@ -90,11 +91,12 @@ public class HomeController {
     }
 
     @RequestMapping("user/create")
-    public String create(Model model){
+    public String create(Model model,HttpSession session){
 
         List<Tag> tagList = tagService.listTag(20);
         model.addAttribute("tags",tagList);
 
+        if(session.getAttribute("user") == null) return "user/login";
         return "user/create";
     }
 
@@ -120,7 +122,7 @@ public class HomeController {
         List<Blog> blogs = blogService.getBlogByUserId(user.getId());
 
         if(blogs.isEmpty()) System.out.println("无个人博客");
-        model.addAttribute("blogs",blogs);
+        model.addAttribute("blogList",blogs);
 
         return "user/userhome";
     }
@@ -128,7 +130,9 @@ public class HomeController {
 
     @PostMapping("/upload-avatar")
     public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file,
-                                          HttpSession session) {
+                                          HttpSession session) throws IOException {
+
+        System.out.println("上传文件？");
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("文件不能为空");
         }
@@ -140,6 +144,14 @@ public class HomeController {
         // 使用用户名命名文件
         User user = (User) session.getAttribute("user");
         String uniqueFilename = user.getUsername() + fileExtension;
+
+        // 保存文件到指定目录
+        File uploadPath = new File("F:/IDEA/ideaworkplace/blogSystem/Myblog/src/main/webapp/static/images");
+        if (!uploadPath.exists()) {
+            uploadPath.mkdirs();
+        }
+        File destFile = new File(uploadPath, uniqueFilename);
+        file.transferTo(destFile);
 
         // 保存文件
         String fileUrl = "/images/" + uniqueFilename;

@@ -20,7 +20,8 @@
                     </div>
                     <div class="field">
                         <input type="file" id="avatarInput" style="display: none;" accept="image/*">
-                        <button class="ui button" onclick="document.getElementById('avatarInput').click()">上传头像</button>
+                        <button class="ui button" onclick="triggerFileInput()">选择头像</button>
+                        <button class="ui button" onclick="uploadAvatar()">确定上传</button>
                     </div>
                 </div>
                 <div class="twelve wide column">
@@ -83,7 +84,7 @@
         </div>
         <div class="ui segment">
             <h3 class="ui header">个人博客</h3>
-            <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${blogs}">
+            <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${blogList}">
                 <div class="ui middle aligned mobile reversed stackable grid">
                     <div class="eleven wide column">
                         <h3 class="ui header"><a href="#" th:href="@{/article/}+${blog.id} + '.html'" target="_blank"
@@ -110,12 +111,15 @@
                                 </div>
                             </div>
                             <div class="right aligned five wide column">
-                                <a href="#" th:if="${blog.type != null}" th:href="@{'/category/' + ${blog.type.id} + '/page/1'}" target="_blank"
-                                   class="ui teal basic label m-padded-tiny m-text-thin"
-                                   th:text="${blog.type.name}">认知升级</a>
-                                <a href="#" th:if="${blog.type == null}" target="_blank"
-                                   class="ui teal basic label m-padded-tiny m-text-thin" >未分类</a>
+                                <div class="ui teal basic label m-padded-tiny m-text-thin" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论</div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="five wide column center aligned">
+                        <div class="ui vertical buttons">
+                            <a href="#" th:href="@{'/article/delete/' + ${blog.id}}" class="ui button" onclick="return confirm('您确定要删除此文章吗？');">删除文章</a>
+                            <a href="#" th:href="@{'/article/edit/' + ${blog.id}}" class="ui button">修改内容</a>
+                            <a href="#" th:href="@{'/article/comments/' + ${blog.id}}" class="ui button">查看评论</a>
                         </div>
                     </div>
                 </div>
@@ -125,28 +129,37 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        $('#avatarInput').change(function () {
-            var formData = new FormData();
-            formData.append('file', $('#avatarInput')[0].files[0]);
 
-            fetch('/upload-avatar', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error('上传失败');
-                }
-            }).then(fileUrl => {
-                console.log("File URL:", fileUrl);
-                avatarPreview.src = fileUrl; // 更新img标签的src属性
-            }).catch(error => {
-                console.error(error);
-            });
+    function triggerFileInput() {
+        document.getElementById("avatarInput").click();
+    }
+
+    function uploadAvatar(){
+
+        var fileInput = document.getElementById("avatarInput");
+        if (fileInput.files.length === 0) {
+            alert("请选择一个文件");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        fetch('/upload-avatar', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('上传失败');
+            }
+        }).then(fileUrl => {
+            document.getElementById("avatarPreview").src = fileUrl;
+        }).catch(error => {
+            console.error(error);
         });
-    });
+    }
 </script>
 
 </body>

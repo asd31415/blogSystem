@@ -11,10 +11,12 @@
 <div class="ui container" style="width: 80%;">
     <div class="ui segment">
         <div class="ui header" style="border-bottom: 1px solid #000; padding-bottom: 10px;">
-            <input type="text" id="title" class="ui action input" placeholder="请输入标题" style="border: none; outline: none;">
+            <input type="text" id="origin-title" class="ui action input"  style="border: none; outline: none;" th:if="${blog != null}" th:value="${blog.title}">
+            <input type="text" id="title" class="ui action input" placeholder="请输入标题" style="border: none; outline: none;" th:unless="${blog != null}">
         </div>
         <div id="editor">
-            <textarea style="display:none;"></textarea>
+            <textarea style="display:none;" th:if="${blog != null}" th:text="${blog.content}"></textarea>
+            <textarea style="display:none;" th:unless="${blog != null}"></textarea>
         </div>
     </div>
 
@@ -24,7 +26,8 @@
             <div class="ui horizontal stackable grid">
                 <div th:each="tag : ${tags}" class="one wide column">
                     <div class="ui checkbox">
-                        <input type="checkbox" name="tags" th:id="'tag_' + ${tag.id}" th:value="${tag.id}">
+                        <!-- 根据tag是否包含在blog的tags中设置复选框状态 -->
+                        <input type="checkbox" name="tags" th:id="'tag_' + ${tag.id}" th:value="${tag.id}" th:checked="${blog != null and blog.tags.contains(tag)}">
                         <label th:for="'tag_' + ${tag.id}" th:text="${tag.name}"></label>
                     </div>
                 </div>
@@ -35,30 +38,43 @@
             <div class="ui horizontal stackable grid">
                 <div class="ten wide column">
                     <div class="ui checkbox">
-                        <input type="checkbox" name="likeOption" id="likeOption">
+                        <!-- 允许点赞复选框 -->
+                        <input type="checkbox" name="likeOption" id="likeOption" th:checked="${blog != null and blog.appreciation}">
                         <label for="likeOption">允许点赞</label>
                     </div>
                     <div class="ui checkbox">
-                        <input type="checkbox" name="commentOption" id="commentOption">
+                        <!-- 允许评论复选框 -->
+                        <input type="checkbox" name="commentOption" id="commentOption" th:checked="${blog != null and blog.commentabled}">
                         <label for="commentOption">允许评论</label>
                     </div>
                     <div class="ui checkbox">
-                        <input type="checkbox" name="publishOption" id="publishOption">
+                        <!-- 是否公开复选框 -->
+                        <input type="checkbox" name="publishOption" id="publishOption" th:checked="${blog != null and blog.published == 0}">
                         <label for="publishOption">是否公开</label>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
     <div class="ui segment">
-        <button class="ui primary button" onclick="sendMarkdownContent()">保存文章</button>
+        <div class="ui form" style="display: flex; align-items: center;">
+            <div class="field" style="flex: 1;">
+                <input type="text" id="origin-description" placeholder="请简要描述一下你的文章" style="width: 100%; " th:if="${blog != null}" th:value="${blog.description}">
+                <input type="text" id="description" placeholder="请简要描述一下你的文章" style="width: 100%; " th:unless="${blog != null}">
+            </div>
+            <button class="ui primary button" onclick="sendMarkdownContent()" style="margin-left: 10px;">保存文章</button>
+        </div>
     </div>
 </div>
 </div>
+<input type="hidden" id="blogExists" th:value="${blog != null ? 'true' : 'false'}">
+<input type="hidden" id="blogId" th:value="${blog != null ? blog.id : -1}">
 
 <!-- 引入 Editor.md 的 JavaScript 文件 -->
 <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/editor.md/editormd.min.js"></script>
+
 <script type="text/javascript">
     var editor;
 
@@ -73,7 +89,22 @@
     });
 
     function sendMarkdownContent() {
-        var title = $('title').val();
+
+        var title,description;
+        var blogExist = $('#blogExists').val();
+
+        if(blogExist){
+            title = $('#origin-title').val();
+            description = $('#origin-description').val();
+        }else{
+            title = $('#title').val();
+            description = $('#description').val();
+        }
+
+        if (!description.trim()) { // 如果输入框为空或只包含空格
+            description = "无"; // 设置默认值为“无”
+        }
+
         // 获取 Markdown 内容
         var markdownContent = $('#editor textarea').val();
 
@@ -82,10 +113,11 @@
         var commentOption = $('#commentOption').prop('checked');
         var publishOption = $('#publishOption').prop('checked');
 
+
         // 获取标签选择信息
         var selectedTags = [];
         $('input[name="tags"]:checked').each(function() {
-            selectedTags.push($(this).attr('id')); // 获取ID属性值
+            selectedTags.push($(this).val()); // 获取value属性值，即tag的id
         });
 
         // 检查标题、内容和标签是否为空
@@ -104,6 +136,10 @@
             return;
         }
 
+
+        var blogId = $('#blogId').val();
+
+
         // 构造要发送的数据
         var postData = {
             title: title,
@@ -111,8 +147,11 @@
             likeOption: likeOption,
             commentOption: commentOption,
             publishOption: publishOption,
-            selectedTags: selectedTags
+            selectedTags: selectedTags,
+            blogId: blogId,
+            description: description
         };
+
 
         // 发送 POST 请求
         $.ajax({
@@ -122,11 +161,11 @@
             data: JSON.stringify(postData),
             success: function(response) {
                 // 请求成功后的处理逻辑
-                console.log('Response:', response);
+                alert("保存成功");
             },
             error: function(xhr, status, error) {
                 // 请求失败后的处理逻辑
-                console.error('Error:', error);
+                alert("保存失败");
             }
         });
     }

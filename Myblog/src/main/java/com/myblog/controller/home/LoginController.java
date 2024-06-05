@@ -1,7 +1,10 @@
 package com.myblog.controller.home;
 
+import com.myblog.config.LogTypeEnum;
+import com.myblog.config.SystemLog;
 import com.myblog.entity.User;
 import com.myblog.service.UserService;
+import com.myblog.util.VerifyCodeUtil;
 import lombok.Value;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sun.security.util.Password;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+import static com.myblog.util.MyUtils.code;
 
 @Controller
 public class LoginController {
@@ -34,6 +43,7 @@ public class LoginController {
     }
 
 
+    @SystemLog(description = "用户登录", type = LogTypeEnum.LOGIN)
     @RequestMapping("/loginVerify")
     public ResponseEntity<?> loginVerify(@RequestParam("username") String username,
                                          @RequestParam("password") String password,
@@ -48,6 +58,8 @@ public class LoginController {
         }
         if(verifyCode==null||verifyCode.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("验证码不能为空！");
+        }else if(!verifyCode.equals(session.getAttribute("verifyCode"))){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("验证码错误！");
         }
 
         //判断帐号密码是否正确
@@ -56,7 +68,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户不存在！");
         }
 
-        if(!password.equals(user.getPassword())){
+        if(!code(password).equals(user.getPassword())){
             System.out.println("输入:"+password);
             System.out.println("正确:"+user.getPassword());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密码错误！");
@@ -68,19 +80,13 @@ public class LoginController {
         return ResponseEntity.ok().body("登录成功！");
     }
 
-    //能不能让前端直接传递一个User对象过来
+    @SystemLog(description = "用户注册", type = LogTypeEnum.REGISTER)
     @RequestMapping("/registerVerify")
     public ResponseEntity<?> registerVerify(@RequestParam("email") String email,
                                       @RequestParam("username") String username,
                                       @RequestParam("password") String password,
                                       @RequestParam("nickname") String nickname,
                                       @RequestParam("description") String description){
-        System.out.println("正在注册帐号！");
-        System.out.println(email);
-        System.out.println(username);
-        System.out.println(password);
-        System.out.println(nickname);
-
 
         User newUser = new User();
 
@@ -100,7 +106,7 @@ public class LoginController {
         }
         if(password == null || password.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密码不能为空！");
-        }else newUser.setPassword(password);
+        }else newUser.setPassword(code(password));
 
         if(nickname == null || nickname.equals("")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("昵称不能为空！");
@@ -110,6 +116,34 @@ public class LoginController {
 
         userService.registerUser(newUser);
         return ResponseEntity.ok().body("注册成功!");
+    }
+
+    /**
+     * 刷新验证码
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/verifyCode", method = RequestMethod.GET)
+    public void verifyCode(HttpServletRequest request , HttpServletResponse response){
+        System.out.println("verifyCode执行=====================");
+        response.setContentType("image/jpeg");
+        //设置页面不缓存
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+
+        VerifyCodeUtil vcUtil = VerifyCodeUtil.Instance();
+        //将随机码设置在session中,用于登录时判断校验
+        request.getSession().setAttribute("verifyCode", vcUtil.getResult()+"");
+        try {
+            ImageIO.write(vcUtil.getImage(), "jpeg", response.getOutputStream());
+
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

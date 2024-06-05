@@ -2,6 +2,7 @@ package com.myblog.service.impl;
 
 import com.myblog.entity.Blog;
 import com.myblog.mapper.BlogMapper;
+import com.myblog.mapper.CommentMapper;
 import com.myblog.service.BlogService;
 import com.myblog.util.MyUtils;
 import org.springframework.beans.BeanUtils;
@@ -16,13 +17,16 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     BlogMapper blogMapper;
 
+    @Autowired
+    CommentMapper commentMapper;
+
     @Override
     public Integer findUserIdByBlogId(Integer id) {
         return blogMapper.findUserIdByBlogId(id);
     }
 
     @Override
-    public Blog getBlogById(Integer id) {
+    public Blog getBlogById(Integer id,boolean changeToHtml) {
 
         Blog blog = blogMapper.getBlogById(id);
         if (blog == null) {
@@ -32,7 +36,9 @@ public class BlogServiceImpl implements BlogService {
         BeanUtils.copyProperties(blog,b);
 
         String content = b.getContent();
-        b.setContent(MyUtils.markdownToHtmlExtensions(content));
+        if(changeToHtml){
+            b.setContent(MyUtils.markdownToHtmlExtensions(content));
+        }
 
         b.setUserId(blogMapper.findUserIdByBlogId(id));
         b.setTags(blogMapper.getBlogTags(id));
@@ -84,5 +90,15 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public void incrBlogLikes(Integer blogId) {
         blogMapper.incrBlogLikes(blogId);
+    }
+
+    @Override
+    public Integer update(Blog oldBlog) {
+        return blogMapper.update(oldBlog);
+    }
+
+    @Override
+    public Integer deleteById(Integer blogId) {
+        return blogMapper.deleteById(blogId);
     }
 }

@@ -3,6 +3,9 @@ package com.myblog.entity;
 import java.util.List;
 
 public class ArticleRequest {
+    private Integer blogId;
+
+    private String description;
     private String title; // 新增title属性
     private String markdownContent;
     private boolean likeOption;
@@ -11,10 +14,17 @@ public class ArticleRequest {
     private List<Integer> selectedTags;
 
     // 必须提供默认构造函数
-    public ArticleRequest() {
-    }
+
 
     // Getter 和 Setter 方法
+    public Integer getBlogId(){return blogId;}
+
+    public void setBlogId(Integer id){this.blogId=id;}
+
+    public String getDescription(){return description;}
+
+    public void setDescription(String d){this.description=d;}
+
     public String getTitle() {
         return title;
     }

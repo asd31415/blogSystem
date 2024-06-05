@@ -11,7 +11,7 @@ public interface BlogService {
     Integer findUserIdByBlogId(Integer id);
 
     //根据文章id获取文章
-    Blog getBlogById(Integer id);
+    Blog getBlogById(Integer id,boolean changeToHtml);
 
     //根据标签获取文章
     List<Blog> getBlogByTag(Integer id);
@@ -37,4 +37,8 @@ public interface BlogService {
     Integer insert(Blog blog);
 
     void incrBlogLikes(Integer blogId);
+
+    Integer update(Blog oldBlog);
+
+    Integer deleteById(Integer blogId);
 }

@@ -41,8 +41,8 @@
                                 <i class="write icon"></i>
                                 <input type="number" name="verifyCode" placeholder="验证码" required>
                                 &nbsp;
-                                <img id="verifyCodeImg" src="verifyCode" class="img-rounded" alt="点击获取验证码" title="点击刷新"
-                                     onclick="this.src='verifyCode?code='+Date.parse(new Date())"/>
+                                <img id="verifyCodeImg" src="/verifyCode" class="img-rounded" alt="点击获取验证码" title="点击刷新"
+                                     onclick="this.src='/verifyCode?code='+Date.parse(new Date())"/>
                             </div>
                         </div>
                         <button class="ui primary labeled icon button" id="login-btn" type="button">
@@ -61,10 +61,13 @@
 </div>
 
 <script>
+    // 获取图片验证码路径
+
     //为登录,注册按钮添加触发函数
     $("#login-btn").on('click', function () {
         var username = document.querySelector("[name='username']").value;
         var password = document.querySelector("[name='password']").value;
+        var verifyCode = document.querySelector("[name='verifyCode']").value;
 
         // 在前后端双重判断
         if (username === "") {
@@ -75,6 +78,7 @@
             alert("密码不能为空");
             return false;  // 阻止默认行为和事件传播
         }
+
 
         var formData = new FormData(document.getElementById("loginForm"));
 

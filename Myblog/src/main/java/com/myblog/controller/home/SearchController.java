@@ -1,10 +1,14 @@
 package com.myblog.controller.home;
 
+import com.myblog.config.LogTypeEnum;
+import com.myblog.config.SystemLog;
 import com.myblog.entity.Blog;
+import com.myblog.entity.Comment;
 import com.myblog.entity.Tag;
 import com.myblog.entity.User;
 import com.myblog.mapper.BlogMapper;
 import com.myblog.mapper.BlogRepository;
+import com.myblog.mapper.CommentMapper;
 import com.myblog.service.BlogService;
 import com.myblog.service.TagService;
 import com.myblog.service.UserService;
@@ -37,12 +41,16 @@ public class SearchController {
     @Autowired
     private BlogRepository blogRepository;
 
+    @Autowired
+    CommentMapper commentMapper;
+
+
+    @SystemLog(description = "浏览文章", type = LogTypeEnum.OPERATION)
     @RequestMapping(value = {"/article/{blogId}.html", "{blogId}"}, method = RequestMethod.GET)
-    public String searchById(Model model,HttpSession session,
-                             @PathVariable Integer blogId){
+    public String searchById(Model model,HttpSession session, @PathVariable Integer blogId){
 
         //1、查询文章
-        Blog blog = blogService.getBlogById(blogId);
+        Blog blog = blogService.getBlogById(blogId,true);
         //文章不存在404
         if (null == blog) {
             return "error/404";
@@ -57,9 +65,13 @@ public class SearchController {
             model.addAttribute("isLoggedIn",false);
         }else model.addAttribute("isLoggedIn",true);
 
+        List<Comment> comments = commentMapper.findByBlogId(blogId);
+        model.addAttribute("comments",comments);
+
         return "user/article";
     }
 
+    @SystemLog(description = "搜索文章", type = LogTypeEnum.OPERATION)
     @RequestMapping(value = "/article/search",method = RequestMethod.GET)
     public String searchByKeyWord(@RequestParam("keyword") String keyword,Model model, HttpSession session){
 
@@ -99,7 +111,7 @@ public class SearchController {
         List<Blog> blogs = blogService.getBlogByUserId(user.getId());
 
         if(blogs.isEmpty()) System.out.println("无个人博客");
-        model.addAttribute("blogs",blogs);
+        model.addAttribute("blogList",blogs);
 
         User cur_user = (User)session.getAttribute("user");
         if(cur_user == null || cur_user.getId() != user.getId()){

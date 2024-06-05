@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author lizx
- * @date 2020-01-30 - 12:05
- */
 @Entity
 @Data
 @Table(name = "t_blog")

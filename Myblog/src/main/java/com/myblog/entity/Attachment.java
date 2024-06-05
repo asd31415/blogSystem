@@ -5,10 +5,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author lizx
- * @date 2020-02-07 - 15:27
- */
 @Data
 public class Attachment implements Serializable {
 

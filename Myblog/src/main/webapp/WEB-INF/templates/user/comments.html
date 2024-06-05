@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="user/fragment :: head">
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+  <div class="ui container">
+    <div class="ui segment">
+      <div class="ui comments" th:if="${#lists.isEmpty(comments)}">
+        <h3 class="ui dividing header">无评论</h3>
+      </div>
+      <div class="ui comments" th:unless="${#lists.isEmpty(comments)}">
+        <h3 class="ui dividing header">评论</h3>
+        <!-- 遍历评论列表 -->
+        <div th:each="comment : ${comments}" class="comment">
+          <div class="content">
+            <!-- 显示评论作者 -->
+            <a class="author" th:text="${comment.nickname}"></a>
+            <!-- 显示评论日期 -->
+            <div class="metadata">
+              <div class="date" th:text="${comment.createTime}"></div>
+            </div>
+            <!-- 显示评论内容 -->
+            <div class="text" th:text="${comment.content}"></div>
+            <!-- 删除按钮 -->
+            <button class="delete-button">删除</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+</script>
+</body>
+</html>
