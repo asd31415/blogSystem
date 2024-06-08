@@ -6,7 +6,6 @@ spring:
   application:
     name: Myblog
 
-
   mvc:
     static-path-pattern : /**
 
@@ -64,6 +63,7 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
 
 #mybatis
 mybatis:

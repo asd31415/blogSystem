@@ -1,13 +1,17 @@
 package com.myblog.controller.home;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.myblog.entity.Blog;
 import com.myblog.entity.Notice;
 import com.myblog.entity.Tag;
 import com.myblog.entity.User;
-import com.myblog.service.BlogService;
-import com.myblog.service.NoticeService;
-import com.myblog.service.TagService;
-import com.myblog.service.UserService;
+import com.myblog.service.*;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +48,9 @@ public class HomeController {
     @Autowired
     NoticeService noticeService;
 
+    @Autowired
+    private DataAnalysisService dataAnalysisService;
+
     @RequestMapping("user/index")
     public String index(Model model, HttpSession session){
 
@@ -57,6 +65,12 @@ public class HomeController {
         //右侧栏目：公告，网站信息
         List<Notice> noticeList = noticeService.listNoticesByCreateTime();
         model.addAttribute("noticeList",noticeList);
+
+        ArrayNode dataForm = dataAnalysisService.getLoginCountByHour();
+        model.addAttribute("dataForm",dataForm);
+
+        ArrayNode dataKeyword = dataAnalysisService.getCountOfSearch();
+        model.addAttribute("dataKeyword",dataKeyword);
 
         return "user/index";
     }

@@ -59,6 +59,56 @@
                         </div>
                     </div>
                 </div>
+<!--                <div class="ui segment">-->
+<!--                    <h3 class="ui teal header">用户登录统计</h3>-->
+<!--                    <canvas id="loginCountChart"></canvas>-->
+<!--                </div>-->
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">用户登录统计</h3>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>小时</th>
+                                    <th>登录次数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- 使用Thymeleaf循环遍历ArrayNode并展示 -->
+                                <tr th:each="loginStat : ${dataForm}">
+                                    <td th:text="${loginStat.get('hour').asInt()}"></td>
+                                    <td th:text="${loginStat.get('login_count').asLong()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 在 user/index 页面中展示搜索关键字的统计数据 -->
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">搜索关键字统计</h3>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>关键字</th>
+                                    <th>搜索次数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- 使用 Thymeleaf 循环遍历 ArrayNode 并展示 -->
+                                <tr th:each="keyword : ${dataKeyword}">
+                                    <td th:text="${keyword.get('keyword').asText()}"></td>
+                                    <td th:text="${keyword.get('searchCount').asLong()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -69,6 +119,58 @@
 <br>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+    // 获取从后端传来的数据
+    var loginStats = /*[[${dataForm}]]*/ '[]';
+    loginStats = JSON.parse(loginStats);
+
+    // 分离小时和登录次数数据
+    var hours = [];
+    var loginCounts = [];
+    loginStats.forEach(function(entry) {
+        hours.push(entry.hour);
+        loginCounts.push(entry.login_count);
+    });
+
+    // 使用Chart.js创建柱型图
+    var ctx = document.getElementById('loginCountChart').getContext('2d');
+    var loginCountChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: hours.map(function(hour) {
+                return hour;
+            }),
+            datasets: [{
+                label: 'Login Count',
+                data: loginCounts,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value, context) {
+                        return value;
+                    }
+                }
+            }
+        },
+        // 添加插件选项，启用datalabels插件
+        plugins: [Chart.plugins.datalabels]
+    });
+</script>
 
 </body>
 </html>

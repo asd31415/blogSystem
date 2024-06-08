@@ -102,6 +102,8 @@ public class SystemLogAspect {
 //                log.setRequestParam(ObjectUtil.mapToString(logParams));
 //            }
             log.setRequestParam(ObjectUtil.mapToString(logParams));
+            //为了进行数据分析，需要
+
             //请求IP
             log.setIp(MyUtils.getIpAddr(request));
             //IP地址
