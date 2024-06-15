@@ -231,7 +231,6 @@
     <orderEntry type="library" name="Maven: com.univocity:univocity-parsers:2.9.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.spark:spark-sketch_2.12:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.spark:spark-catalyst_2.12:3.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-parser-combinators_2.12:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.janino:janino:3.0.12" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.janino:commons-compiler:3.0.16" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.8" level="project" />
@@ -293,5 +292,35 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-scala_2.12:2.12.5" level="project" />
     <orderEntry type="library" name="Maven: com.thoughtworks.paranamer:paranamer:2.8" level="project" />
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.5.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-mllib_2.12:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-parser-combinators_2.12:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-streaming_2.12:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-graphx_2.12:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-mllib-local_2.12:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scalanlp:breeze_2.12:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.scalanlp:breeze-macros_2.12:1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.github.fommil.netlib:core:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.opencsv:opencsv:2.3" level="project" />
+    <orderEntry type="library" name="Maven: com.github.wendykierp:JTransforms:3.1" level="project" />
+    <orderEntry type="library" name="Maven: pl.edu.icm:JLargeArrays:1.5" level="project" />
+    <orderEntry type="library" name="Maven: com.chuusai:shapeless_2.12:2.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:macro-compat_2.12:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:spire_2.12:0.17.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:spire-macros_2.12:0.17.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:spire-platform_2.12:0.17.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:spire-util_2.12:0.17.0" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:algebra_2.12:2.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.typelevel:cats-kernel_2.12:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-collection-compat_2.12:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.jaxb:jaxb-runtime:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.istack:istack-commons-runtime:3.0.7" level="project" />
+    <orderEntry type="library" name="Maven: dev.ludovic.netlib:blas:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: dev.ludovic.netlib:lapack:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: dev.ludovic.netlib:arpack:2.2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.maxmind.geoip2:geoip2:2.16.0" level="project" />
+    <orderEntry type="library" name="Maven: com.maxmind.db:maxmind-db:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.11" level="project" />
   </component>
 </module>

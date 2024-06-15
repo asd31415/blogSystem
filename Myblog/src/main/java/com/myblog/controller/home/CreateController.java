@@ -1,10 +1,13 @@
 package com.myblog.controller.home;
 
 
+import com.myblog.config.LogTypeEnum;
+import com.myblog.config.SystemLog;
 import com.myblog.entity.ArticleRequest;
 import com.myblog.entity.Blog;
 import com.myblog.entity.User;
 import com.myblog.service.BlogService;
+import com.myblog.service.DataAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,10 @@ public class CreateController {
     @Autowired
     BlogService blogService;
 
+    @Autowired
+    DataAnalysisService dataAnalysisService;
+
+    @SystemLog(description = "创建文章", type = LogTypeEnum.OPERATION)
     @RequestMapping(value = "/submitMarkdown",method = RequestMethod.POST)
     public ResponseEntity<?> createArticle(@RequestBody ArticleRequest articleRequest, HttpSession session){
 
@@ -71,6 +78,8 @@ public class CreateController {
                 return new ResponseEntity<>("保存失败！", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+        dataAnalysisService.reFlushSimilarity();
+
         return ResponseEntity.ok().body("保存成功！");
     }
 }

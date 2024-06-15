@@ -10,7 +10,15 @@ public enum LogTypeEnum {
 
     FORGET("forget"),
 
-    ATTACHMENT("attachment");
+    LIKE("like"),
+
+    ATTACHMENT("attachment"),
+
+    COMMENT("comment"),
+
+    READ("read"),
+
+    SEARCH("search");
 
     private String value;
 

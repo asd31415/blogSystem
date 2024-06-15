@@ -68,7 +68,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户不存在！");
         }
 
-        if(!code(password).equals(user.getPassword())){
+        if(!code(password).equals(code(user.getPassword()))){
             System.out.println("输入:"+password);
             System.out.println("正确:"+user.getPassword());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("密码错误！");

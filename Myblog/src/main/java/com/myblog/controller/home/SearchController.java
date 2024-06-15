@@ -45,7 +45,7 @@ public class SearchController {
     CommentMapper commentMapper;
 
 
-    @SystemLog(description = "浏览文章", type = LogTypeEnum.OPERATION)
+    @SystemLog(description = "浏览文章", type = LogTypeEnum.READ)
     @RequestMapping(value = {"/article/{blogId}.html", "{blogId}"}, method = RequestMethod.GET)
     public String searchById(Model model,HttpSession session, @PathVariable Integer blogId){
 

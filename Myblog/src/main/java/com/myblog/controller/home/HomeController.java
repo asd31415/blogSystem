@@ -1,6 +1,8 @@
 package com.myblog.controller.home;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.myblog.config.LogTypeEnum;
+import com.myblog.config.SystemLog;
 import com.myblog.entity.Blog;
 import com.myblog.entity.Notice;
 import com.myblog.entity.Tag;
@@ -49,8 +51,10 @@ public class HomeController {
     NoticeService noticeService;
 
     @Autowired
-    private DataAnalysisService dataAnalysisService;
+    DataAnalysisService dataAnalysisService;
 
+
+    @SystemLog(description = "首页", type = LogTypeEnum.OPERATION)
     @RequestMapping("user/index")
     public String index(Model model, HttpSession session){
 
@@ -66,27 +70,33 @@ public class HomeController {
         List<Notice> noticeList = noticeService.listNoticesByCreateTime();
         model.addAttribute("noticeList",noticeList);
 
-        ArrayNode dataForm = dataAnalysisService.getLoginCountByHour();
-        model.addAttribute("dataForm",dataForm);
-
-        ArrayNode dataKeyword = dataAnalysisService.getCountOfSearch();
-        model.addAttribute("dataKeyword",dataKeyword);
-
         return "user/index";
     }
 
+
+    @SystemLog(description = "搜索页面", type = LogTypeEnum.OPERATION)
     @RequestMapping("user/search")
     public String search(Model model,HttpSession session){
 
         LinkedList<String> searchHistory = (LinkedList<String>) session.getAttribute("searchHistory");
         model.addAttribute("history",searchHistory);
 
-        List<Blog> hotBlogs = blogService.getBlogsByComment();
-        model.addAttribute("blogList",hotBlogs);
-
+        User user = (User) session.getAttribute("user");
+        if(user == null){
+            List<Blog> hotBlogs = blogService.getBlogsByComment();
+            model.addAttribute("blogList",hotBlogs);
+        }else{
+            List<Integer> idList = dataAnalysisService.getRecommandList(user.getUsername());
+            List<Blog> blogList = new ArrayList<>();
+            for(Integer blogId : idList){
+                blogList.add(blogService.getBlogById(blogId,true));
+            }
+            model.addAttribute("blogList",blogList);
+        }
         return "user/search";
     }
 
+    @SystemLog(description = "分类页面", type = LogTypeEnum.OPERATION)
     @RequestMapping("user/category")
     public String category(Model model,HttpSession session){
 
@@ -104,6 +114,7 @@ public class HomeController {
         return "user/category";
     }
 
+    @SystemLog(description = "创作页面", type = LogTypeEnum.OPERATION)
     @RequestMapping("user/create")
     public String create(Model model,HttpSession session){
 
@@ -114,6 +125,7 @@ public class HomeController {
         return "user/create";
     }
 
+    @SystemLog(description = "退出登录", type = LogTypeEnum.OPERATION)
     @RequestMapping("user/logout")
     public String logout(Model model,HttpSession session){
 
@@ -124,6 +136,7 @@ public class HomeController {
         return index(model,session);
     }
 
+    @SystemLog(description = "个人信息页面", type = LogTypeEnum.OPERATION)
     @RequestMapping("user/userhome")
     public String userhome(Model model,HttpSession session){
 
@@ -142,6 +155,7 @@ public class HomeController {
     }
 
 
+    @SystemLog(description = "上传文件", type = LogTypeEnum.OPERATION)
     @PostMapping("/upload-avatar")
     public ResponseEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file,
                                           HttpSession session) throws IOException {

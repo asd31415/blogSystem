@@ -107,7 +107,7 @@ public class SystemLogAspect {
             //请求IP
             log.setIp(MyUtils.getIpAddr(request));
             //IP地址
-            //log.setIpInfo(ipInfoUtil.getIpCity(ipInfoUtil.getIpAddr(request)));
+//            log.setIpInfo(ipInfoUtil.getIpCity(ipInfoUtil.getIpAddr(request)));
             //请求开始时间
             long beginTime = beginTimeThreadLocal.get().getTime();
             long endTime = System.currentTimeMillis();

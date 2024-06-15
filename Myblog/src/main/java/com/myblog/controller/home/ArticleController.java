@@ -1,5 +1,7 @@
 package com.myblog.controller.home;
 
+import com.myblog.config.LogTypeEnum;
+import com.myblog.config.SystemLog;
 import com.myblog.entity.Blog;
 import com.myblog.entity.Comment;
 import com.myblog.entity.Tag;
@@ -7,6 +9,7 @@ import com.myblog.entity.User;
 import com.myblog.mapper.CommentMapper;
 import com.myblog.mapper.TagMapper;
 import com.myblog.service.BlogService;
+import com.myblog.service.DataAnalysisService;
 import com.myblog.service.TagService;
 import com.myblog.service.UserService;
 import org.commonmark.node.Node;
@@ -43,7 +46,11 @@ public class ArticleController {
     @Autowired
     CommentMapper commentMapper;
 
+    @Autowired
+    DataAnalysisService dataAnalysisService;
 
+
+    @SystemLog(description = "点赞", type = LogTypeEnum.LIKE)
     @RequestMapping(value = {"article/like/{blogId}", "{blogId}"})
     public String like(@PathVariable Integer blogId, Model model, HttpSession session){
 
@@ -67,6 +74,7 @@ public class ArticleController {
         return "user/article";
     }
 
+    @SystemLog(description = "评论", type = LogTypeEnum.COMMENT)
     @RequestMapping(value = "article/comment")
     public ResponseEntity<String> comment(Model model, HttpSession session, HttpServletRequest request,
                                           @RequestBody Map<String, Object> postData){
@@ -103,6 +111,7 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body("评论成功");
     }
 
+    @SystemLog(description = "查看评论", type = LogTypeEnum.OPERATION)
     @RequestMapping(value = {"article/comments/{blogId}","{blogId}"})
     public String comments(@PathVariable Integer blogId,Model model){
 
@@ -115,6 +124,7 @@ public class ArticleController {
         return "user/comments";
     }
 
+    @SystemLog(description = "编辑文章", type = LogTypeEnum.OPERATION)
     @RequestMapping(value = {"article/edit/{blogId}","{blogId}"})
     public String edit(@PathVariable Integer blogId,Model model){
 
@@ -124,9 +134,12 @@ public class ArticleController {
         List<Tag> tagList = tagService.listTag(100);
         model.addAttribute("tags",tagList);
 
+        dataAnalysisService.reFlushSimilarity();
+
         return "user/create";
     }
 
+    @SystemLog(description = "删除文章", type = LogTypeEnum.OPERATION)
     @RequestMapping(value = {"article/delete/{blogId}","{blogId}"})
     public String delete(@PathVariable Integer blogId,Model model,HttpSession session){
 
@@ -136,11 +149,14 @@ public class ArticleController {
         if(user == null){
             return "user/login";
         }
+
         model.addAttribute("user",user);
 
         List<Blog> blogs = blogService.getBlogByUserId(user.getId());
 
         model.addAttribute("blogList",blogs);
+
+        dataAnalysisService.reFlushSimilarity();
 
         return "user/userhome";
     }
