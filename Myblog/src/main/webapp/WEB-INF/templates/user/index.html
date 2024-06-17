@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="user/fragment :: head">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="user/fragment :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+    <div class="ui container" style="width: 66%;">
+        <div class="ui stackable grid fluid">
+            <!--中间博客列表-->
+            <div class="ten wide column">
+                <div class="ui segment">
+
+                </div>
+
+                <div class="ui top attached segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">热门推荐</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui attached segment">
+                    <div th:replace="user/fragment :: bloglist"></div>
+                </div>
+            </div>
+            <!--右边的top-->
+            <div class="five wide column left aligned">
+                <div class="ui top attached segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">公告</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui attached segment">
+                    <div class="ui segment" th:each="notice : ${noticeList}">
+                        <div class="ui divided items">
+                            <div class="item">
+                                <!-- 公告标题 -->
+                                <div class="content">
+                                    <a class="header" th:text="${notice.title}" style="font-weight: bold;"></a>
+                                    <!-- 公告内容 -->
+                                    <div class="description" th:text="${notice.content}"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <!-- 公告创建时间 -->
+                                <div class="content">
+                                    <div class="description">
+                                        <i class="calendar icon"></i><span th:text="${#dates.format(notice.createTime,'yyyy-MM-dd')}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="ui segment">-->
+<!--                    <h3 class="ui teal header">用户登录统计</h3>-->
+<!--                    <canvas id="loginCountChart"></canvas>-->
+<!--                </div>-->
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">用户登录统计</h3>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>小时</th>
+                                    <th>登录次数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- 使用Thymeleaf循环遍历ArrayNode并展示 -->
+                                <tr th:each="loginStat : ${hourLogin}">
+                                    <td th:text="${loginStat.get('hour').asInt()}"></td>
+                                    <td th:text="${loginStat.get('login_count').asLong()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 在 user/index 页面中展示搜索关键字的统计数据 -->
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">搜索关键字统计</h3>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>登录数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- 使用 Thymeleaf 循环遍历 ArrayNode 并展示 -->
+                                <tr th:each="loginStat : ${dayLogin}">
+                                    <td th:text="${loginStat.get('day').asInt()}"></td>
+                                    <td th:text="${loginStat.get('login_count').asLong()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">搜索关键字统计</h3>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>登录次数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- 使用 Thymeleaf 循环遍历 ArrayNode 并展示 -->
+                                <tr th:each="loginStat : ${monthLogin}">
+                                    <td th:text="${loginStat.get('month').asInt()}"></td>
+                                    <td th:text="${loginStat.get('login_count').asLong()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">搜索关键字统计</h3>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>关键字</th>
+                                    <th>搜索次数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- 使用 Thymeleaf 循环遍历 ArrayNode 并展示 -->
+                                <tr th:each="loginStat : ${dataKeyword}">
+                                    <td th:text="${loginStat.get('keyword').asInt()}"></td>
+                                    <td th:text="${loginStat.get('searchCount').asLong()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+</body>
+</html>

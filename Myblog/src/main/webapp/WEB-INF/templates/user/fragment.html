@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="cn" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/editor.md/css/editormd.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        .nav-container {
+            display: flex;
+            justify-content: center;
+        }
+        .ui.menu {
+            text-align: center;
+            width: 100%;
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+        }
+        .ui.menu .item {
+            flex: 1;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .ui.menu .create-item {
+            margin-left: auto; /* 将其推到最右边 */
+        }
+        .full-width {
+            display: flex;
+            width: 100%;
+        }
+        #editor {
+            width: 50%;
+            height: 400px;
+        }
+        #preview {
+            width: 50%;
+            height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?4f5553d30f9b70ee15bdcbc4353dd549";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+<body>
+
+
+<!--导航-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <div class="ui container nav-container">
+        <div th:fragment="header" id="header-container">
+            <div class="ui inverted secondary stackable menu">
+                <a href="#" th:href="@{/user/index}" class="m-item item m-mobile-hide " th:classappend="${n==1} ? 'active'"><i
+                        class="mini home icon"></i>&nbsp;首页</a>
+                <a href="#" th:href="@{/user/search}" class="m-item item m-mobile-hide" th:classappend="${n==2} ? 'active'"><i
+                        class="mini tags icon"></i>&nbsp;搜索</a>
+                <a href="#" th:href="@{/user/category}" class="m-item item m-mobile-hide" th:classappend="${n==3} ? 'active'"><i
+                        class="mini idea icon"></i>&nbsp;分类</a>
+                <a href="#" th:href="@{/user/create}" class="m-item item m-mobile-hide create-item" th:classappend="${n==5} ? 'active'"><i
+                        class="mini clone icon"></i>&nbsp;创作</a>
+                <a href="#" th:href="@{/user/userhome}" class="m-item item m-mobile-hide" th:classappend="${n==4} ? 'active'"><i
+                        class="mini info icon"></i>&nbsp;个人中心</a>
+                <a href="#" th:href="@{/user/logout}" class="m-item item m-mobile-hide create-item"><i
+                        class="mini clone icon"></i>&nbsp;退出登录</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive">
+    <div class="ui center aligned container">
+        <div th:fragment="widgetList" id="footer-container">
+            <div class="ui inverted divided stackable grid">
+                <div class="four wide column" th:each="widget : ${footerWidgets}"
+                     th:utext="${widget.widgetContent}"></div>
+            </div>
+        </div>
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-thin m-text-spaced m-opacity-tiny" style="color: #ffffff">Copyright © 2020 - <span th:text="${#dates.year(#dates.createNow())}">2019</span>
+            isLizx -Blog Designed by Lizhixiang<br><br>
+            <a rel="nofollow" href="http://www.beian.miit.gov.cn" target="_blank">浙ICP备20005114号</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a rel="nofollow" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33011802001928" target="_blank"><img style="margin-bottom: -4px;" src="/images/ghs.png">&nbsp;&nbsp;浙公网安备33011802001928</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a rel="nofollow" href="https://tongji.baidu.com/web/welcome/ico?s=4f5553d30f9b70ee15bdcbc4353dd549" target="_blank"> 网站统计</a>
+        </p>
+    </div>
+</footer>
+
+<div th:fragment="bloglist" th:unless="${#lists.isEmpty(blogList)}">
+    <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${blogList}">
+        <div class="ui middle aligned mobile reversed stackable grid">
+            <div class="fourteen wide column">
+                <h3 class="ui header"><a href="#" th:href="@{/article/}+${blog.id} + '.html'" target="_blank"
+                                         class="m-black" th:text="${blog.title}">你真的理解什么是财富自由吗?</a></h3>
+                <p class="m-text" th:text="|${blog.description}......|">
+                    正确做好任何一件事情的前提是清晰、正确的理解目标。而事实是，我们很多人很多时候根本没有对目标正确的定义，甚至根本从来就没有想过，只是大家都那么做而已…...</p>
+
+                <div class="ui grid">
+                    <div class="eleven wide column">
+                        <div class="ui mini horizontal link list">
+                            <div class="item" th:if="${blog.user != null}">
+                                <th:block th:with="staticPath='/static'">
+                                    <img src="https://unsplash.it/100/100?image=1005"
+                                         th:src="${staticPath + blog.user.avatar}" alt="" class="ui avatar image">
+                                </th:block>
+                                <div class="content"><a href="#" th:href="@{/about/{userId}(userId=${blog.userId})}"
+                                                        class="header" th:text="${blog.user.nickname}"></a></div>
+                            </div>
+                            <div class="item">
+                                <i class="calendar icon"></i><span
+                                    th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">2017-10-01</span>
+                            </div>
+                            <div class="item">
+                                <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right aligned five wide column">
+                        <div class="ui teal basic label m-padded-tiny m-text-thin" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

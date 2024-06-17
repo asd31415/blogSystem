@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+<!--    <link rel="stylesheet" th:href="@{/static/css/semantic.min.css}"/>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" th:href="@{/static/css/login.css}"/>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div class="centered">
+    <div class="ui centered grid container">
+        <div class="nine wide column">
+            <div class="ui fluid card">
+                <h2 class="ui teal image header">
+                    <div class="content">
+                        博客系统登录
+                    </div>
+                </h2>
+                <div class="content">
+
+                    <form class="ui fluid form" id="loginForm">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="username" placeholder="用户名" th:value="${username}" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="密码" th:value="${password}" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="write icon"></i>
+                                <input type="number" name="verifyCode" placeholder="验证码" required>
+                                &nbsp;
+                                <img id="verifyCodeImg" src="/verifyCode" class="img-rounded" alt="点击获取验证码" title="点击刷新"
+                                     onclick="this.src='/verifyCode?code='+Date.parse(new Date())"/>
+                            </div>
+                        </div>
+                        <button class="ui primary labeled icon button" id="login-btn" type="button">
+                            <i class="unlock alternate icon"></i>
+                            Login
+                        </button>
+                        <button class="ui primary labeled icon button" id="register-btn" type="button">
+                            <i class="unlock alternate icon"></i>
+                            Register
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取图片验证码路径
+
+    //为登录,注册按钮添加触发函数
+    $("#login-btn").on('click', function () {
+        var username = document.querySelector("[name='username']").value;
+        var password = document.querySelector("[name='password']").value;
+        var verifyCode = document.querySelector("[name='verifyCode']").value;
+
+        // 在前后端双重判断
+        if (username === "") {
+            alert("用户名不能为空");
+            return false;  // 阻止默认行为和事件传播
+        }
+        if (password === "") {
+            alert("密码不能为空");
+            return false;  // 阻止默认行为和事件传播
+        }
+
+
+        var formData = new FormData(document.getElementById("loginForm"));
+
+        fetch("/loginVerify", {
+            method: "POST",
+            body: formData
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    return response.text().then(function (data) {
+                        window.location.href = "/user/index";
+                    });
+                } else {
+                    // 处理非 2xx 响应
+                    return response.text().then(function (error) {
+                        alert("登录失败: " + error);
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+                alert("An error occurred: " + error.message);
+            });
+
+        return false;  // 阻止默认行为和事件传播
+    });
+
+    // 为注册按钮添加触发函数
+    $("#register-btn").on('click', function () {
+        window.location.href = "/register";
+    });
+</script>
+
+</body>
+</html>
+

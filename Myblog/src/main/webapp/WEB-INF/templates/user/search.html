@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="user/fragment :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(2)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+    <div class="ui container">
+        <div class="ui segment" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <div class="ui header" style="border-bottom: 1px solid #000; padding-bottom: 10px;">
+                <div class="ui action input" style="border: none; outline: none; box-shadow: none; width: 400px;">
+                    <input type="text" id="searchValue" placeholder="输入你想搜索的文章关键字..." style="width: 100%;">
+                    <a href="#" id="searchButton" class="ui button" style="background-color: #3385ff; color: #fff;">搜索</a>
+                </div>
+            </div>
+            <div class="ui segment" style="width: 100%;">
+                <div class="ui three column grid">
+                    <div class="row" th:if="${#lists.isEmpty(history)}">
+                        <div class="column">
+                            <div class="item">暂无历史搜索记录</div>
+                        </div>
+                    </div>
+                    <div class="row" th:unless="${#lists.isEmpty(history)}">
+                        <div class="column" th:each="keyword, iterStat : ${history}">
+                            <div class="item" th:id="'historyItem_' + ${iterStat.index}">
+                                <i class="close icon" style="float: right;" th:onclick="'removeHistoryItem(' + ${iterStat.index} + ')'"></i>
+                                <div class="content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;" contenteditable="false"
+                                     onmouseover="highlightCard(this)" onmouseout="resetCardColor(this)">
+                                    <div class="header" th:text="${keyword}" th:attr="onclick=|searchKeyword('${keyword}')|"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="ui button" onclick="clearHistory()">清空历史记录</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ui segment" th:if="${#lists.isEmpty(blogList)}">
+            <div class="column">
+                <div class="item">无相关内容</div>
+            </div>
+        </div>
+        <div class="ui segment" th:unless="${#lists.isEmpty(blogList)}">
+            <div th:replace="user/fragment :: bloglist"></div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<script>
+
+    document.getElementById('searchButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        var searchValue = document.getElementById('searchValue').value;
+
+        // 检查输入的搜索关键字是否为空
+        if (searchValue === '') {
+            alert('请输入搜索关键字');
+            return;
+        }
+        searchKeyword(searchValue);
+    });
+
+    function searchKeyword(keyword) {
+        if (keyword) {
+            // 替换下面的URL为你的搜索结果页面的URL
+            window.location.href = '/article/search?keyword=' + encodeURIComponent(keyword);
+        }
+    }
+
+    function redirectLink(card) {
+        var link = card.querySelector('a'); // 获取卡片内的链接元素
+        link.click(); // 触发链接的点击事件
+    }
+
+    function highlightCard(card) {
+        card.style.backgroundColor = 'lightgray'; // 设置卡片背景颜色
+    }
+
+    function resetCardColor(card) {
+        card.style.backgroundColor = ''; // 取消卡片背景颜色
+    }
+
+    function removeHistoryItem(index) {
+        var item = document.getElementById('historyItem_' + index);
+        item.parentNode.removeChild(item);
+    }
+
+    function clearHistory() {
+        fetch('/search/clearHistory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('清空历史记录失败');
+                }
+                console.log('历史记录已清空');
+                var historyItems = document.querySelectorAll('.item');
+                historyItems.forEach(function(item) {
+                    item.parentNode.removeChild(item);
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+</script>
+
+
+</body>
+</html>

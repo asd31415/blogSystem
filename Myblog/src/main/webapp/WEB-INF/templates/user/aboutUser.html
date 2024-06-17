@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="user/fragment :: head">
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(4)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+  <div class="ui container">
+    <div class="ui segment">
+      <h3 class="ui header">用户信息</h3>
+      <div class="ui grid">
+        <div class="four wide column">
+          <div class="ui fluid image">
+            <th:block th:with="staticPath='/static'">
+              <img class="ui medium circular image" th:src="${staticPath + user.avatar}" th:alt="${user.username}" id="avatarPreview" alt="Avatar">
+            </th:block>
+          </div>
+        </div>
+        <div class="twelve wide column">
+          <div class="ui grid">
+            <div class="two wide column">
+            </div>
+            <div class="eight wide column">
+              <div class="ui form">
+                <div class="field">
+                  <label>昵称</label>
+                  <span th:text="${user.nickname}"></span>
+                </div>
+                <div class="field">
+                  <label>邮箱</label>
+                  <span th:text="${user.email}"></span>
+                </div>
+                <div class="field">
+                  <label>个人描述</label>
+                  <span th:text="${user.description}"></span>
+                </div>
+                <div class="field">
+                  <label>注册时间</label>
+                  <span th:text="${#dates.format(user.registerTime,'yyyy-MM-dd')}"></span>
+                </div>
+                <div class="field">
+                  <label>最后登录时间</label>
+                  <span th:text="${#dates.format(user.lastLoginTime,'yyyy-MM-dd')}"></span>
+                </div>
+              </div>
+            </div>
+            <div class="eight wide column">
+              <!-- Right empty column for spacing -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="ui segment">
+      <h3 class="ui header">个人博客</h3>
+      <div th:replace="user/fragment :: bloglist"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

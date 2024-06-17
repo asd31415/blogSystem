@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="user/fragment :: head">
+    <style>
+        .ui.checkbox.active {
+            background-color: #2185d0; /* 你可以根据需要调整颜色 */
+            color: white; /* 改变文字颜色 */
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(3)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+    <div class="ui container">
+        <div class="ui segment" style="display: flex; flex-direction: column; width: 100%">
+            <div class="ui horizontal stackable grid" id="tags">
+                <div th:each="tag : ${tags}" class="three wide column" th:classappend="${tag.id == tag_select} ? 'selected'">
+                    <!-- 使用 Semantic UI 的卡片组件 -->
+                    <div class="ui card" style="display: flex; justify-content: center; align-items: center;"
+                         onmouseover="highlightCard(this)" onmouseout="resetCardColor(this)" onclick="redirectLink(this)">
+                        <a href="#" class="m-item item" th:href="@{'/user/category/' + ${tag.id}}" th:text="${tag.name}">
+                            <i class="mini home icon"></i>&nbsp;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui segment">
+            <h3 class="ui teal header">文章列表</h3>
+            <div th:replace="user/fragment :: bloglist"></div>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<script>
+    function redirectLink(card) {
+        var link = card.querySelector('a'); // 获取卡片内的链接元素
+        link.click(); // 触发链接的点击事件
+    }
+
+    function highlightCard(card) {
+        card.style.backgroundColor = 'lightgray'; // 设置卡片背景颜色
+    }
+
+    function resetCardColor(card) {
+        card.style.backgroundColor = ''; // 取消卡片背景颜色
+    }
+</script>
+
+<style>
+    .selected {
+        background-color: #f0f0f0; /* 高亮颜色 */
+    }
+</style>
+
+</body>
+</html>

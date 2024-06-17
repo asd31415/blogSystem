@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .message {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .countdown {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="message">该用户已经是管理员!</div>
+    <div class="countdown">正在返回上一页面... <span id="countdown">3</span> 秒</div>
+</div>
+
+<script>
+    let countdownElement = document.getElementById('countdown');
+    let countdownValue = 3;
+
+    let countdownInterval = setInterval(function() {
+        countdownValue--;
+        countdownElement.textContent = countdownValue;
+
+        if (countdownValue === 0) {
+            clearInterval(countdownInterval);
+            window.location.href = "/userManage"; // 更改为您的实际页面地址
+        }
+    }, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 设置元素铺满整个屏幕高度 */
+    flex-direction: column;
+    background-image: url('/static/images/login_backgroud.jpg');
+    background-size: cover; /* 背景图片将铺满整个元素 */
+    background-position: center; /* 将背景图片居中 */
+}

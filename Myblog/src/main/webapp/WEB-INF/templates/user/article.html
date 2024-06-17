@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="user/fragment :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="user/fragment :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<div id="waypoint" class="m-container-small m-padded-tb-big animated fadeIn">
+    <div class="ui container">
+        <div class="ui top attached segment">
+            <div class="ui horizontal link list">
+                <div class="item">
+                    <th:block th:with="staticPath='/static'">
+                        <img class="ui circular image" th:src="${staticPath + blog.user.avatar}" th:alt="${blog.user.username}" id="avatarPreview"
+                             style="width: 60px; height: 60px;">
+                    </th:block>
+                    <div class="content"><a href="#" th:href="@{/about/{userId}(userId=${blog.userId})}" class="header" th:text="${blog.user.nickname}"></a></div>
+                </div>
+                <div class="item">
+                    <i class="calendar icon"></i> <span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">2017-10-01</span>
+                </div>
+                <div class="item">
+                    <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                </div>
+            </div>
+        </div>
+        <div class="ui  attached padded segment">
+
+            <h2 class="ui center aligned header" th:text="${blog.title}">关于刻意练习的清单</h2>
+            <br>
+
+            <!--中间主要内容部分-->
+            <div id="content" class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large"
+                 th:utext="${blog.content}"></div>
+
+            <!--标签-->
+            <div class="m-padded-lr-responsive">
+                <div class="ui basic teal left pointing label" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论
+                </div>
+            </div>
+
+            <!--赞-->
+            <div>
+                <div class="ui center aligned basic segment" th:if="${isLoggedIn}">
+                    <a th:href="@{/article/like/{blogId}(blogId=${blog.id})}" class="ui orange basic circular button">
+                        <i class="empty heart icon"></i>赞 ([[${blog.likeCount}]])
+                    </a>
+                    <button id="toggle-comment-form-${blog.id}" class="ui right floated button">打开评论区</button>
+                </div>
+                <div class="ui center aligned basic segment" th:unless="${isLoggedIn}">
+                    <a class="ui orange basic circular button">
+                        <i class="empty heart icon"></i>赞 ([[${blog.likeCount}]])
+                    </a>
+                    <a th:href="@{/login}" class="ui right floated button">登录后查看评论</a>
+                </div>
+            </div>
+
+            <div id="comment-form-${blog.id}" class="ui form" style="display: block;" th:if="${isLoggedIn}">
+                <input type="hidden" name="blog.id" th:value="${blog.id}">
+                <input type="hidden" name="parentComment.id" value="-1">
+                <div class="field">
+                    <textarea name="content" id="comment-content" placeholder="请输入评论信息..." rows="1"></textarea>
+                </div>
+                <div class="fields">
+                    <div class="field m-margin-bottom-small m-mobile-wide">
+                        <button id="comment-btn" type="button" class="ui teal button m-mobile-wide" onclick="sendComment()">
+                            <i class="edit icon"></i>发布
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 展示评论的部分 -->
+                <div class="ui comments" id="commentList">
+                    <h3 class="ui dividing header">评论</h3>
+                    <!-- 遍历评论列表 -->
+                    <div th:each="comment : ${comments}" class="comment">
+                        <div class="content">
+                            <!-- 显示评论作者 -->
+                            <a class="author" th:text="${comment.nickname}"></a>
+                            <!-- 显示评论日期 -->
+                            <div class="metadata">
+                                <div class="date" th:text="${comment.createTime}"></div>
+                            </div>
+                            <!-- 显示评论内容 -->
+                            <div class="text" th:text="${comment.content}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="blogId" th:value="${blog != null ? blog.id : -1}">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    function sendComment() {
+
+        var blogId = parseInt($('#blogId').val());
+        var content = $('#comment-content').val();
+
+        if (content.trim() === '') {
+            alert('评论内容不能为空');
+            return;
+        }
+
+        var postData = {
+            blogId: blogId,
+            content: content
+        };
+
+        fetch("/article/comment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(postData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("评论成功");
+                    window.location.reload();
+                } else {
+                    console.error("评论失败");
+                }
+            })
+            .catch(error => {
+                console.error("网络错误:", error);
+            });
+    }
+
+
+    document.getElementById('toggle-comment-form-${blog.id}').addEventListener('click', function() {
+        var commentForm = document.getElementById('comment-form-${blog.id}');
+        if (commentForm.style.display === 'none') {
+            commentForm.style.display = 'block';
+        } else {
+            commentForm.style.display = 'none';
+        }
+    });
+
+    var commentTextarea = document.getElementById('comment-content');
+
+    commentTextarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+
+修改java版本位java 8
+去
+
+修改springboot版本
+SpringBoot版本3.0.5，该版本的SpringBoot所需的JDK版本是JDK17，本地电脑只安装了一个JDK8的运行环境
+在pom.xml中需要修改成：2.1.5.RELEAS
+
+添加Thymeleaf和devtools依赖
+
+src/main/java 里面放Java代码，resource 里面放 配置文件.xml， webapp的templates放html，static放js、css。
+
+添加webapp后，将controller处理请求后返回的string文件名自动映射到WEB-INF/templates中的文件
+-----
+spring.thymeleaf.prefix=/WEB-INF/templates/
+spring.thymeleaf.suffix=.html
+
+推送至github
+先git clone到本地
+遇到两个问题：
+问题1:git用的是http2.0而github用的是1.1
+解决：git config --global http.version HTTP/1.1
+问题2：Failed to connect to github.com port 443 after 21090 ms: Couldn‘t connect to server
+解决：关闭VPN
+问题3： RPC failed; curl 28 OpenSSL SSL_read: Connection was reset, errno 10054
+解决：git config --global http.sslVerify "false"
+
+把项目代码复制进该仓库
+git add .
+git commit -m "msg"
+git push
+推送
+
+-----搭建Mybatis+mysql框架：https://blog.csdn.net/Winter_chen001/article/details/77249029
+配置MyBaits框架
+entity+mapper+.xml配置文件+yaml中的配置
+-----完成
+
+-----配置Redis环境：https://blog.csdn.net/yu102655/article/details/112217778
+引入pom依赖+修改aplication配置文件+redisconfig类
+
+2024.5.9
+-----引入redis
+引入redis后项目启动失败：无法解析redis依赖
+
+修改pom.xml，并在file/setting中更换成本地的maven仓库，刷新
+
+-----项目成功运行
+
+2024.5.10
+-----用semantic和bootstrap搭建前端登录注册页面
+引入css、js页面
+使用th:href属性和th:src属性，并使用Thymeleaf表达式指定文件的相对路径
+
+启动报错：Caused by: java.lang.IllegalStateException: Ambiguous mapping. Cannot map 'basicErrorController' method 
+问题：RequestMapping映射路径重复
+/error路径已经被系统注册过
+
+后端获取前端传递的数据：
+1. 请求参数（Query参数）：可以通过`@RequestParam`注解来获取请求中的单个或多个查询参数。
+public ResponseEntity<?> handleRequest(@RequestParam("param1") String param1,
+                                       @RequestParam("param2") int param2) 
+
+
+2. 路径参数（Path参数）：可以通过`@PathVariable`注解来获取请求路径中的参数。
+```
+@GetMapping("/endpoint/{id}")
+public ResponseEntity<?> handleRequest(@PathVariable("id") String id) {
+```
+3. 请求体（Request Body）：对于POST或PUT请求，您可以使用`@RequestBody`注解将请求体的内容绑定到相应的对象中。
+```java
+@PostMapping("/endpoint")
+public ResponseEntity<?> handleRequest(@RequestBody MyRequestObject request) {
+```
+4. 请求头（Request Header）：使用`@RequestHeader`注解来获取请求头中的特定信息。
+```java
+@GetMapping("/endpoint")
+public ResponseEntity<?> handleRequest(@RequestHeader("User-Agent") String userAgent) {
+```
+5. Get请求参数：可以使用`ServletRequest`或`HttpServletRequest`对象来获取所有请求参数。
+```java
+@GetMapping("/endpoint")
+public ResponseEntity<?> handleRequest(HttpServletRequest request) {
+    String param1 = request.getParameter("param1");
+    String param2 = request.getParameter("param2");
+
+    // 处理请求
+}
+```
+
+以上是一些常用的从前端获取数据的方式，在具体的控制器方法中，您可以选择适合您业务需求的方式来获取前端传递的数据。
+在Spring Boot中，你可以使用以下方法来将多个不同的请求映射到同一个处理函数中：
+
+1. 使用`@RequestMapping`注解：你可以在处理函数上使用`@RequestMapping`注解，并指定多个不同的请求路径。这样，当任何一个被请求时，都会映射到该处理函数。
+```java
+@RequestMapping(value={"/path1", "/path2", "/path3"})
+```
+2. 使用`@GetMapping`、`@PostMapping`等注解：可以使用具体的HTTP方法注解（如`@GetMapping`、`@PostMapping`等）来标注处理函数。然后，将它们分别映射到不同的路径，并使用相同的处理函数。
+```java
+@GetMapping("/path1")
+@PostMapping("/path2")
+@PutMapping("/path3")
+public ResponseEntity<?> handleRequests() {
+    // 你的处理逻辑
+    return ResponseEntity.ok().build();
+}
+```
+
+后端向前端传到数据的方式，如错误提示信息
+后端（Spring Boot）代码：
+
+```java
+@PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    boolean loginSuccessful = /* 登录验证逻辑 */;
+    if (loginSuccessful) {
+        // 登录成功
+        return ResponseEntity.ok().build();
+    } else {
+        // 登录失败，返回错误信息
+        String errorMessage = "登录失败，无效的用户名或密码";
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+    }
+}
+```
+前端（JavaScript）代码：
+
+```javascript
+fetch('/login', {
+  method: 'POST',
+  body: JSON.stringify(loginData)
+})
+.then(response => {
+  if (response.ok) {
+    // 登录成功逻辑
+  } else {
+    response.text().then(errorMessage => {
+      // 登录失败逻辑，显示错误消息
+      alert(errorMessage);
+    });
+  }
+})
+.catch(error => {
+  console.error('请求出错', error);
+});
+```
+
+
+
+
+
+

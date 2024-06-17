@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="user/fragment :: head">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="user/fragment :: menu(1)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small"></nav>
+
+<style>
+    .ui.segment {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<div class="m-container m-padded-tb-big animated fadeIn" style="padding-top: 1em !important;">
+    <div class="ui container" style="width: 80%;">
+        <div class="ui stackable grid fluid">
+            <div class="eight wide column">
+                <div class="ui segment" >
+                    <canvas id="hourLoginForm" style="width: 700px; height: 400px;"></canvas>
+                </div>
+                <div class="ui segment" >
+                    <canvas id="dayLoginForm" style="width: 700px; height: 400px;"></canvas>
+                </div>
+                <div class="ui segment">
+                    <canvas id="monthLoginForm" style="width: 700px; height: 400px;"></canvas>
+                </div>
+                <div class="ui segment">
+                    <canvas id="urlCostForm" style="width: 700px; height: 600px;"></canvas>
+                </div>
+                <div class="ui segment">
+                    <canvas id="dataKeywordForm" style="width: 700px; height: 600px;"></canvas>
+                </div>
+            </div>
+            <div class="eight wide column left aligned">
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">用户搜索关键词统计</h3>
+                            <div class="ui action input">
+                                <input type="text" id="searchInput2" placeholder="搜索用户...">
+                                <button class="ui button" onclick="searchData2();">搜索</button>
+                            </div>
+                            <table class="ui celled table">
+                                <thead>
+                                <tr>
+                                    <th>关键字</th>
+                                    <th>搜索次数</th>
+                                </tr>
+                                </thead>
+                                <tbody id="userActivityTable2">
+                                <!-- 使用 Thymeleaf 循环遍历 ArrayNode 并展示 -->
+                                <tr th:each="loginStat : ${articleRead}">
+                                    <td th:text="${loginStat.get('article_id').asInt()}"></td>
+                                    <td th:text="${loginStat.get('count').asInt()}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui segment">
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">用户行为统计</h3>
+                            <div class="ui action input">
+                                <input type="text" id="searchInput" placeholder="搜索用户...">
+                                <button class="ui button" onclick="searchData();">搜索</button>
+                            </div>
+                            <div id="tableContainer">
+                                <table class="ui celled striped table">
+                                    <thead>
+                                    <tr>
+                                        <th>时间</th>
+                                        <th>ip</th>
+                                        <th>地点</th>
+                                        <th>请求</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="userActivityTable">
+                                    <!-- 使用 Thymeleaf 循环遍历 ArrayNode 并展示 -->
+                                    <tr th:each="loginStat : ${userActivity}">
+                                        <td th:text="${loginStat.get('createtime').asText()}"></td>
+                                        <td th:text="${loginStat.get('ip').asText()}"></td>
+                                        <td th:text="${loginStat.get('ipinfo').asText()}"></td>
+                                        <td th:text="${loginStat.get('requesturl').asText()}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<input type="hidden" id="hourLogin" th:value="${hourLogin}">
+<input type="hidden" id="dayLogin" th:value="${dayLogin}">
+<input type="hidden" id="monthLogin" th:value="${monthLogin}">
+<input type="hidden" id="dataKeyword" th:value="${dataKeyword}">
+<input type="hidden" id="urlCost" th:value="${urlCost}">
+
+
+<script th:inline="javascript">
+    // 获取从后端传来的数据
+    var loginStats = document.getElementById('hourLogin').value;
+    loginStats = JSON.parse(loginStats);
+
+    // 分离小时和登录次数数据
+    var xlist = loginStats.map(item => item.hour);
+    var ylist = loginStats.map(item => item.count);
+
+    // 使用Chart.js创建柱型图
+    var ctx = document.getElementById('hourLoginForm').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xlist,
+            datasets: [{
+                label: '各个小时登录人数统计',
+                data: ylist,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '登录总数/次'
+                    },
+                    font: {
+                        size: 14, // 字体大小
+                        weight: 'bold' // 字体加粗
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '第i小时'
+                    },
+                    font: {
+                        size: 14, // 字体大小
+                        weight: 'bold' // 字体加粗
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value, context) {
+                        return value;
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    // 获取从后端传来的数据
+    var loginStats = document.getElementById('dayLogin').value;
+    loginStats = JSON.parse(loginStats);
+
+    // 分离小时和登录次数数据
+    var xlist = loginStats.map(item => item.day);
+    var ylist = loginStats.map(item => item.count);
+
+    // 使用Chart.js创建柱型图
+    var ctx = document.getElementById('dayLoginForm').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xlist,
+            datasets: [{
+                label: '所有月份中各天登录人数统计',
+                data: ylist,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        labelString: '登录总数/人次'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        labelString: '第i天'
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value, context) {
+                        return value;
+                    }
+                }
+            }
+        }
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        $.ajax({
+            url: '/your-server-endpoint',
+            type: 'GET',
+            success: function(response) {
+                // 假设返回的数据格式为 [{hour: 1, count: 10}, {hour: 2, count: 20}, ...]
+                var loginStats = JSON.parse(response);
+                var xlist = loginStats.map(item => item.hour);
+                var ylist = loginStats.map(item => item.count);
+
+                // 更新图表数据
+                myChart.data.labels = xlist;
+                myChart.data.datasets[0].data = ylist;
+                myChart.update();
+            },
+            error: function(error) {
+                console.log('Error:', error);
+            }
+        });
+    });
+</script>
+
+<script th:inline="javascript">
+    // 获取从后端传来的数据
+    var loginStats = document.getElementById('monthLogin').value;
+    loginStats = JSON.parse(loginStats);
+
+    // 分离小时和登录次数数据
+    var xlist = loginStats.map(item => item.month);
+    var ylist = loginStats.map(item => item.count);
+
+    // 使用Chart.js创建柱型图
+    var ctx = document.getElementById('monthLoginForm').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xlist,
+            datasets: [{
+                label: '各月份人数登录统计',
+                data: ylist,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        labelString: '登录总数/次数'
+                    }
+                },
+                x:{
+                    title: {
+                        display: true,
+                        labelString: '第i月'
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value, context) {
+                        return value;
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    // 获取从后端传来的数据
+    var loginStats = document.getElementById('dataKeyword').value;
+    loginStats = JSON.parse(loginStats);
+
+    // 分离小时和登录次数数据
+    var xlist = loginStats.map(item => item.keyword);
+    var ylist = loginStats.map(item => item.count);
+
+    // 使用Chart.js创建柱型图
+    var ctx = document.getElementById('dataKeywordForm').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: xlist,
+            datasets: [{
+                label: '搜索关键字统计',
+                data: ylist,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        labelString: '次数'
+                    }
+                },
+                x:{
+                    title: {
+                        display: true,
+                        labelString: '关键字'
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value, context) {
+                        return value;
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script th:inline="javascript">
+    // 获取从后端传来的数据
+    var loginStats = document.getElementById('urlCost').value;
+    loginStats = JSON.parse(loginStats);
+
+    // 分离小时和登录次数数据
+    var xlist = loginStats.map(item => item.requesturl);
+    var ylist = loginStats.map(item => item.count);
+
+    // 使用Chart.js创建柱型图
+    var ctx = document.getElementById('urlCostForm').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: xlist,
+            datasets: [{
+                label: '请求用时统计',
+                data: ylist,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: '用时/ms'
+                    }
+                },
+                x:{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'url'
+                    }
+                }
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    formatter: function(value, context) {
+                        return value;
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    function searchData() {
+        const username = $('#searchInput').val();
+        $.ajax({
+            url: 'data/searchUserActivity',
+            method: 'GET',
+            data: { username: username },
+            success: function(data) {
+                const userActivityTable = $('#userActivityTable');
+                userActivityTable.empty();
+                data.forEach(item => {
+                    userActivityTable.append(`
+                            <tr>
+                                <td>${item.createtime}</td>
+                                <td>${item.ip}</td>
+                                <td>${item.ipinfo}</td>
+                                <td>${item.requesturl}</td>
+                            </tr>
+                        `);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+
+    function searchData2() {
+        const username = $('#searchInput2').val();
+        $.ajax({
+            url: 'data/searchKeywordCount',
+            method: 'GET',
+            data: { username: username },
+            success: function(data) {
+                const userActivityTable = $('#userActivityTable2');
+                userActivityTable.empty();
+                data.forEach(item => {
+                    userActivityTable.append(`
+                            <tr>
+                                <td>${item.article_id}</td>
+                                <td>${item.count}</td>
+                            </tr>
+                        `);
+                });
+            },
+            error: function(error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tags</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+
+        body {
+            background-image: url('/static/images/6.jpg');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding-top: 100px; /* 增加 padding-top 值以避免导航栏遮挡 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 30px; /* 减小上下宽度 */
+        }
+
+        .navbar a {
+            float: left;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 14px 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .navbar a:last-child {
+            float: right;
+        }
+
+        .navbar a.active {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #0077b6;
+            color: #fff;
+            font-weight: bold;
+            padding: 1.5rem;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .table-container {
+            max-height: 400px; /* 设置表格最大高度 */
+            overflow-y: auto; /* 使表格可滚动 */
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+        }
+
+        .table th, .table td {
+            border-top: none;
+            padding: 1rem;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f5f5f5;
+        }
+
+        .table th {
+            font-weight: bold;
+        }
+
+        .btn {
+            border-radius: 10px;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: #0077b6;
+            border-color: #0077b6;
+        }
+
+        .btn-primary:hover {
+            background-color: #005d8f;
+            border-color: #005386;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #b02a37;
+            border-color: #a52834;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+
+        .btn-success {
+            background-color: #dda0dd;
+            border-color: #dda0dd;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <a href="/admin/index">Dashboard</a>
+    <a href="/userManage">Users</a>
+    <a href="/blogsManage">Blogs</a>
+    <a href="/tagsManage" class="active">Tags</a>
+    <a href="/admin/login">Logout</a>
+</div>
+
+<div class="container my-5">
+    <div class="card">
+        <div class="card-header">
+            Tags
+            <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#addTagModal">
+                Add Tag
+            </button>
+        </div>
+        <div class="card-body table-container">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="tag : ${tags}">
+                    <td th:text="${tag.id}"></td>
+                    <td th:text="${tag.name}"></td>
+                    <td>
+                        <a th:href="@{/admin/tags/{id}/delete(id=${tag.id})}" class="btn btn-info btn-sm">Delete</a>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" th:data-bs-target="${'#updateTagModal-' + tag.id}">
+                            Update
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addTagModal" tabindex="-1" aria-labelledby="addTagModalTag" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTagModalTag">Add Tag</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/admin/tags/add}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tagId" class="form-label">ID</label>
+                        <input type="text" class="form-control" id="tagId" name="id" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tagName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="tagName" name="name" required>
+                    </div>
+                    <input type="hidden" name="requestId" th:value="${#request.getParameter('id')}">
+                    <input type="hidden" name="requestName" th:value="${#request.getParameter('name')}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:each="tag : ${tags}" th:id="'updateTagModal-' + ${tag.id}" class="modal fade" tabindex="-1" aria-labelledby="updateTagModalTag" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateTagModalTag">Update Tag</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/admin/tags/{id}/update(id=${tag.id})}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="updateTagId" class="form-label">ID</label>
+                        <input type="text" class="form-control" id="updateTagId" name="id" th:value="${tag.id}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateTagName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="updateTagName" name="name" th:value="${tag.name}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
