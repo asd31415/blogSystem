@@ -28,10 +28,6 @@ public class Blog implements Serializable {
 
     private String description;
 
-    private String firstPicture;
-
-    private String flag;
-
     private Integer published;
 
     private Boolean recommend;
@@ -44,9 +40,6 @@ public class Blog implements Serializable {
 
     private Integer views;
 
-    @Column(name = "type_id")
-    private Integer typeId;
-
     @Column(name = "user_id")
     private Integer userId;
 
@@ -56,19 +49,6 @@ public class Blog implements Serializable {
     @Column(name = "like_count")
     private Integer likeCount;
 
-    /**
-     * 文章类型
-     * post  文章
-     * page  页面
-     */
-    @Transient
-    private Integer postType;
-
-    @Transient
-    private String url;
-
-    @Transient
-    private Type type;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

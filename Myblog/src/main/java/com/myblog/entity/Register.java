@@ -2,10 +2,7 @@ package com.myblog.entity;
 
 import java.io.Serializable;
 
-/**
- * @author lizx
- * @date 2020-03-06 - 16:17
- */
+
 public class Register implements Serializable {
     private static final long serialVersionUID = 8639794612968093235L;
     private Long id;

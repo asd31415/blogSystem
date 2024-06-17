@@ -6,10 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author lizx
- * @date 2020-01-30 - 11:49
- */
+
 @Data
 @Entity
 @Table(name = "t_user")

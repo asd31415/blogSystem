@@ -5,10 +5,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * @author lizx
- * @date 2020-01-30 - 12:27
- */
 @Data
 public class Notice implements Serializable {
     private static final long serialVersionUID = 1234567890L;

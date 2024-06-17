@@ -88,20 +88,20 @@
         });
     });
 
+    function getValue(selector) {
+        var element = $(selector);
+        return element.length ? element.val().trim() : "";
+    }
+
     function sendMarkdownContent() {
 
-        var title,description;
-        var blogExist = $('#blogExists').val();
+        var blogExist = $('#blogExists').val() === 'true';
 
-        if(blogExist){
-            title = $('#origin-title').val();
-            description = $('#origin-description').val();
-        }else{
-            title = $('#title').val();
-            description = $('#description').val();
-        }
+        // 根据博客是否存在获取对应的标题和描述
+        var title = blogExist ? getValue('#origin-title') : getValue('#title');
+        var description = blogExist ? getValue('#origin-description') : getValue('#description');
 
-        if (!description.trim()) { // 如果输入框为空或只包含空格
+        if (!description || !description.trim()) {
             description = "无"; // 设置默认值为“无”
         }
 
@@ -121,12 +121,12 @@
         });
 
         // 检查标题、内容和标签是否为空
-        if (title.trim() === '') {
+        if (!title || !title.trim()) {
             alert('标题不能为空');
             return;
         }
 
-        if (markdownContent.trim() === '') {
+        if (!markdownContent || !markdownContent.trim()) {
             alert('内容不能为空');
             return;
         }

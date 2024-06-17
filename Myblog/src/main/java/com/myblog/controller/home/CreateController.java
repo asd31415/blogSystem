@@ -48,13 +48,18 @@ public class CreateController {
 
             newBlog.setDescription(articleRequest.getDescription());
 
+            newBlog.setLikeCount(0);
+            newBlog.setViews(0);
+            newBlog.setCommentCount(0);
+
+            newBlog.setRecommend(true);
+            newBlog.setShareStatement(true);
+
             User user = (User) session.getAttribute("user");
             if(user != null){
                 newBlog.setUser(user);
                 newBlog.setUserId(user.getId());
             }
-
-            newBlog.setPostType(0);
 
             if(blogService.insert(newBlog) == 0){
                 return new ResponseEntity<>("保存失败！", HttpStatus.INTERNAL_SERVER_ERROR);

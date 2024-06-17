@@ -3,6 +3,7 @@ package com.myblog.service.impl;
 import com.myblog.entity.Blog;
 import com.myblog.mapper.BlogMapper;
 import com.myblog.mapper.CommentMapper;
+import com.myblog.mapper.UserMapper;
 import com.myblog.service.BlogService;
 import com.myblog.util.MyUtils;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +20,9 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     CommentMapper commentMapper;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public Integer findUserIdByBlogId(Integer id) {
@@ -64,7 +68,13 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public List<Blog> getBlogLists() {
-        return blogMapper.listBlog();
+        List<Blog> blogList = blogMapper.listBlog();
+        for(Blog b : blogList){
+            b.setLikeCount(blogMapper.getLikeCount(b.getId()));
+            b.setUserId(blogMapper.findUserIdByBlogId(b.getId()));
+            b.setUser(userMapper.getUserById(b.getUserId()));
+        }
+        return blogList;
     }
 
     @Override

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="user/fragment :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="waypoint" class="m-container-small m-padded-tb-big animated fadeIn">
+    <div class="ui container">
+        <div class="ui top attached segment">
+            <div class="ui horizontal link list">
+                <div class="item">
+                    <th:block th:with="staticPath='/static'">
+                        <!--                        <img class="ui circular image" th:src="${staticPath + blog.user.avatar}" th:alt="${blog.user.username}" id="avatarPreview"-->
+                        <!--                             style="width: 60px; height: 60px;">-->
+                    </th:block>
+                    <div class="content"><a href="#" th:href="@{/about/{userId}(userId=${blog.userId})}" class="header" th:text="${blog.user.nickname}"></a></div>
+                </div>
+                <div class="item">
+                    <i class="calendar icon"></i> <span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}">2017-10-01</span>
+                </div>
+                <div class="item">
+                    <i class="eye icon"></i> <span th:text="${blog.views}">2342</span>
+                </div>
+            </div>
+        </div>
+        <div class="ui attached segment">
+            <!--图片区域-->
+            <img src="https://unsplash.it/800/450?image=1005" th:src="@{${blog.firstPicture}}" alt=""
+                 class="ui fluid rounded image">
+        </div>
+        <div class="ui  attached padded segment">
+            <!--内容-->
+            <div class="ui right aligned basic segment">
+                <div class="ui orange basic label" th:text="${blog.flag}">原创</div>
+            </div>
+
+            <h2 class="ui center aligned header" th:text="${blog.title}">关于刻意练习的清单</h2>
+            <br>
+
+            <!--中间主要内容部分-->
+            <div id="content" class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large"
+                 th:utext="${blog.content}"></div>
+
+            <!--标签-->
+            <div class="m-padded-lr-responsive">
+                <div class="ui basic teal left pointing label" th:each="tag : ${blog.tags}" th:text="${tag.name}">方法论
+                </div>
+            </div>
+
+
+            <!-- 展示评论的部分 -->
+            <div class="ui comments">
+                <h3 class="ui dividing header">评论</h3>
+
+                <!-- 如果评论列表不为空,遍历评论列表 -->
+                <div th:if="${not #lists.isEmpty(comments)}" th:each="comment : ${comments}" class="comment">
+                    <div class="avatar">
+                        <img src="https://semantic-ui.com/images/avatar/small/matt.jpg">
+                    </div>
+                    <div class="content">
+                        <a class="author" th:text="${comment.nickname}"></a>
+                        <div class="metadata">
+                            <div class="date" th:text="${comment.createTime}"></div>
+                        </div>
+                        <div class="text" th:text="${comment.content}"></div>
+                    </div>
+                </div>
+
+                <!-- 如果评论列表为空,显示提示信息 -->
+                <div th:if="${#lists.isEmpty(comments)}">
+                    <p>现在还没有评论呦</p>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    document.getElementById('toggle-comment-form-${blog.id}').addEventListener('click', function() {
+        var commentForm = document.getElementById('comment-form-${blog.id}');
+        if (commentForm.style.display === 'none') {
+            commentForm.style.display = 'block';
+        } else {
+            commentForm.style.display = 'none';
+        }
+    });
+
+    document.getElementById("commentpost-btn").addEventListener("click", function() {
+        var blogId = document.querySelector("input[name='blog.id']").value;
+        var parentId = document.querySelector("input[name='parentComment.id']").value;
+        var content = document.querySelector("textarea[name='content']").value;
+
+        fetch("/article/comment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                blogId: blogId,
+                parentId: parentId,
+                content: content
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("评论成功");
+                } else {
+                    console.error("评论失败");
+                }
+            })
+            .catch(error => {
+                console.error("网络错误:", error);
+            });
+    });
+
+    var commentTextarea = document.getElementById('comment-content');
+
+    commentTextarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+</script>
+</body>
+</html>
